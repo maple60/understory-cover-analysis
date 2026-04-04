@@ -1,0 +1,19 @@
+project:
+  type: website
+  output-dir: docs
+  execute-dir: project
+
+website: 
+  title: "下層植生の解析"
+  description: "Analysis of understory vegetation using R and Quarto"
+  navbar: 
+    left:
+      - href: index.qmd
+        text: "Home"
+
+format:
+  html:
+    toc: true
+    theme: cosmo
+
+bibliography: references.bib
