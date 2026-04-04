@@ -1,0 +1,605 @@
+---
+title: "区画画像の領域分類を説明しながら進める"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+jupyter: python3
+execute:
+  echo: true
+  warning: false
+  error: true
+params:
+  image_path: null
+  width: 1000
+  height: 1000
+  output_dir: "output"
+  use_file_dialog: true
+---
+
+# この文書で行うこと
+
+この文書では、区画画像について次の流れで解析を進めます。
+
+1. 画像を読み込む
+2. 区画の四隅を 4 点クリックで指定する
+3. 射影変換で真上から見た正方形画像に補正する
+4. HSV しきい値で緑領域を抽出する
+5. 緑以外の領域からリターを抽出する
+6. 残りを地面として扱う
+7. 面積割合を計算し、CSV と画像を保存する
+
+元の Python スクリプトは GUI 操作を前提としており、
+- 最初に画像ファイルを選ぶ
+- 四隅をクリックする
+- OpenCV のスライダーでしきい値を調整する
+という流れになっています。
+
+この qmd 版では、その処理を**手順ごとに説明しながら追える**ように分けています。
+
+## 実行上の注意
+
+この文書には `tkinter`、`matplotlib` のクリック操作、`OpenCV` のトラックバーを使う部分があります。
+そのため、**端末だけの完全自動レンダリングよりも、手元のローカル環境でチャンクごとに実行する使い方**に向いています。
+
+- Positron / VS Code / Jupyter 連携でチャンクを順に実行する
+- あるいは `quarto preview` で動かしながら確認する
+
+という使い方を想定しています。
+
+# ライブラリの読み込み
+
+まず、解析に必要なライブラリを読み込みます。
+
+```{python}
+from datetime import datetime
+from pathlib import Path
+
+import os
+import cv2
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+try:
+    import tkinter as tk
+    from tkinter import filedialog
+    TK_AVAILABLE = True
+except Exception:
+    TK_AVAILABLE = False
+```
+
+# パラメータ設定
+
+Quarto の `params` を使って、画像パスや出力先を管理します。
+`image_path` を直接与えればその画像を使い、与えなければ必要に応じてファイルダイアログを開きます。
+
+```{python}
+# IMAGE_PATH = params.get("image_path", None)
+IMAGE_PATH = "data/A065_kasou_01.JPG"  # 直接指定する場合はここにパスを入れる
+WIDTH = int(params.get("width", 1000))
+HEIGHT = int(params.get("height", 1000))
+OUTPUT_DIR = Path(params.get("output_dir", "output"))
+USE_FILE_DIALOG = bool(params.get("use_file_dialog", True))
+
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+(OUTPUT_DIR / "figures" / "quadrat_warped").mkdir(parents=True, exist_ok=True)
+(OUTPUT_DIR / "figures" / "quadrat_segmented").mkdir(parents=True, exist_ok=True)
+```
+
+# 補助関数の定義
+
+ここでは、元スクリプトの処理を再利用しやすいように関数に分けます。
+
+## 画像パスの解決
+
+```{python}
+def resolve_image_path(image_path=None, use_file_dialog=True):
+    if image_path is not None:
+        image_path = Path(image_path)
+        if not image_path.exists():
+            raise FileNotFoundError(f"画像が見つかりません: {image_path}")
+        return image_path
+
+    if use_file_dialog:
+        if not TK_AVAILABLE:
+            raise RuntimeError(
+                "tkinter が使えないため、ファイルダイアログを開けません。params.image_path を指定してください。"
+            )
+        root = tk.Tk()
+        root.withdraw()
+        selected = filedialog.askopenfilename(
+            title="Select Image",
+            filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.tif *.tiff")],
+        )
+        root.destroy()
+        if not selected:
+            raise RuntimeError("画像が選択されませんでした。")
+        return Path(selected)
+
+    raise RuntimeError("params.image_path が未指定です。")
+```
+
+## 4 点の順序を整える関数
+
+元スクリプトでは、4 つのクリック点をそのまま使うのではなく、
+重心から見た角度順に並べ、さらに左上に最も近い点から始まるように調整しています。
+
+```{python}
+def order_points_by_angle(pts):
+    pts = np.array(pts, dtype="float32")
+    center = np.mean(pts, axis=0)
+    angles = np.arctan2(pts[:, 1] - center[1], pts[:, 0] - center[0])
+    ordered = pts[np.argsort(angles)]
+    idx_topleft = np.argmin(np.sum(ordered, axis=1))
+    ordered = np.roll(ordered, -idx_topleft, axis=0)
+    return ordered
+```
+
+## 4 点クリック用の関数
+
+```{python}
+def pick_four_points(image_bgr):
+    image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
+    clicked_points = []
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.imshow(image_rgb)
+    ax.set_title("Click 4 points (corners of the quadrat)")
+    ax.axis("off")
+
+    def on_click(event):
+        if event.inaxes:
+            x, y = int(event.xdata), int(event.ydata)
+            clicked_points.append((x, y))
+            ax.plot(x, y, 'ro')
+            fig.canvas.draw()
+            if len(clicked_points) == 4:
+                plt.close(fig)
+
+    cid = fig.canvas.mpl_connect('button_press_event', on_click)
+    plt.show()
+
+    if len(clicked_points) != 4:
+        raise RuntimeError("4点が選択されていません。")
+
+    return order_points_by_angle(clicked_points)
+```
+
+## 射影変換
+
+指定した4点をもとに、コドラートを真上から見た正方形画像へ変換します。
+
+```{python}
+def warp_quadrat(image_bgr, pts_src, width=1000, height=1000):
+    pts_dst = np.array([
+        [0, 0],
+        [width - 1, 0],
+        [width - 1, height - 1],
+        [0, height - 1]
+    ], dtype="float32")
+
+    M = cv2.getPerspectiveTransform(pts_src, pts_dst)
+    warped = cv2.warpPerspective(image_bgr, M, (width, height))
+    return warped, M
+```
+
+## HSV しきい値を対話的に調整する関数
+
+この関数は、OpenCV のトラックバーで HSV の範囲を調整し、
+`q` キーが押された時点の設定を返します。
+
+```{python}
+def interactive_hsv_mask(hsv_image, original_bgr, window_name, initial_values):
+    cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+
+    def nothing(x):
+        pass
+
+    for key, value, max_value in [
+        ("H min", initial_values["H min"], 179),
+        ("H max", initial_values["H max"], 179),
+        ("S min", initial_values["S min"], 255),
+        ("S max", initial_values["S max"], 255),
+        ("V min", initial_values["V min"], 255),
+        ("V max", initial_values["V max"], 255),
+    ]:
+        cv2.createTrackbar(key, window_name, int(value), int(max_value), nothing)
+
+    final_values = None
+    final_mask = None
+
+    while True:
+        hmin = cv2.getTrackbarPos("H min", window_name)
+        hmax = cv2.getTrackbarPos("H max", window_name)
+        smin = cv2.getTrackbarPos("S min", window_name)
+        smax = cv2.getTrackbarPos("S max", window_name)
+        vmin = cv2.getTrackbarPos("V min", window_name)
+        vmax = cv2.getTrackbarPos("V max", window_name)
+
+        lower = np.array([hmin, smin, vmin])
+        upper = np.array([hmax, smax, vmax])
+        mask = cv2.inRange(hsv_image, lower, upper)
+        masked = cv2.bitwise_and(original_bgr, original_bgr, mask=mask)
+
+        display_left = cv2.resize(masked, (500, 500))
+        display_right = cv2.resize(original_bgr, (500, 500))
+        display = np.hstack((display_left, display_right))
+
+        total_pixels = mask.shape[0] * mask.shape[1]
+        class_pixels = cv2.countNonZero(mask)
+        other_pixels = total_pixels - class_pixels
+        class_ratio = 100 * class_pixels / total_pixels
+        other_ratio = 100 * other_pixels / total_pixels
+
+        annotated = cv2.copyMakeBorder(
+            display, 0, 50, 0, 0,
+            cv2.BORDER_CONSTANT,
+            value=(255, 255, 255)
+        )
+        text = f"Selected: {class_ratio:.2f}% | Other: {other_ratio:.2f}%"
+        cv2.putText(
+            annotated,
+            text,
+            (10, display.shape[0] + 30),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.8,
+            (0, 0, 0),
+            1,
+            cv2.LINE_AA,
+        )
+
+        cv2.imshow(window_name, annotated)
+
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
+            final_values = {
+                "hmin": hmin,
+                "hmax": hmax,
+                "smin": smin,
+                "smax": smax,
+                "vmin": vmin,
+                "vmax": vmax,
+            }
+            final_mask = mask.copy()
+            break
+
+    cv2.destroyWindow(window_name)
+    return final_values, final_mask
+```
+
+## 結果保存用の関数
+
+```{python}
+def save_results(
+    image_path,
+    output_dir,
+    warped,
+    segmented,
+    green_ratio,
+    litter_ratio,
+    soil_ratio,
+    green_params,
+    litter_params,
+):
+    image_path = Path(image_path)
+    basename_with_ext = image_path.name
+    basename = image_path.stem
+
+    time_str = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+
+    df = pd.DataFrame({
+        "file_path": [str(image_path)],
+        "file_name": [basename_with_ext],
+        "time": [time_str],
+        "green_ratio": [green_ratio],
+        "litter_ratio": [litter_ratio],
+        "soil_ratio": [soil_ratio],
+        "hmin_green": [green_params["hmin"]],
+        "hmax_green": [green_params["hmax"]],
+        "smin_green": [green_params["smin"]],
+        "smax_green": [green_params["smax"]],
+        "vmin_green": [green_params["vmin"]],
+        "vmax_green": [green_params["vmax"]],
+        "hmin_litter": [litter_params["hmin"]],
+        "hmax_litter": [litter_params["hmax"]],
+        "smin_litter": [litter_params["smin"]],
+        "smax_litter": [litter_params["smax"]],
+        "vmin_litter": [litter_params["vmin"]],
+        "vmax_litter": [litter_params["vmax"]],
+    })
+
+    csv_path = output_dir / "classify_quadrat_regions.csv"
+    if csv_path.exists():
+        existing_data = pd.read_csv(csv_path)
+        combined = pd.concat([existing_data, df], ignore_index=True)
+        combined = combined.drop_duplicates(subset="file_name", keep="last")
+    else:
+        combined = df
+    combined.to_csv(csv_path, index=False, encoding="utf-8")
+
+    warped_path = output_dir / "figures" / "quadrat_warped" / f"{basename}.jpg"
+    segmented_path = output_dir / "figures" / "quadrat_segmented" / f"{basename}.jpg"
+
+    cv2.imwrite(str(warped_path), warped)
+    cv2.imwrite(str(segmented_path), segmented)
+
+    return csv_path, warped_path, segmented_path
+```
+
+# 1. 画像の読み込み
+
+まず対象画像を読み込み、RGB に直して確認します。
+
+```{python}
+image_path = resolve_image_path(IMAGE_PATH, USE_FILE_DIALOG)
+image_bgr = cv2.imread(str(image_path))
+if image_bgr is None:
+    raise RuntimeError("画像の読み込みに失敗しました。")
+
+image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
+print(image_path)
+print(image_bgr.shape)
+```
+
+画像を[matplotlib](https://matplotlib.org/)で表示して確認します。
+
+```{python}
+fig, ax = plt.subplots(figsize=(8, 8))
+ax.imshow(image_rgb)
+ax.set_title("Original Image")
+ax.axis("off")
+plt.show()
+```
+
+# 2. 区画の四隅を指定する
+
+ここでは区画の四隅を 4 点クリックで指定します。
+
+- クリック順は厳密でなくてよい
+- あとで `order_points_by_angle()` で順序を補正する
+
+```{python}
+pts_src = pick_four_points(image_bgr)
+pts_src
+```
+
+クリックした点の位置を元画像上に重ねて確認します。
+
+```{python}
+preview = image_rgb.copy()
+
+plt.figure(figsize=(8, 8))
+plt.imshow(preview)
+for i, (x, y) in enumerate(pts_src):
+    plt.scatter(x, y, c="red", s=50)
+    plt.text(x + 10, y + 10, f"P{i+1}", color="yellow", fontsize=12)
+plt.title("Selected quadrat corners")
+plt.axis("off")
+plt.show()
+```
+
+# 3. 射影変換で正方形に補正する
+
+選択した 4 点をもとに、区画を真上から見た正方形画像へ変換します。
+
+```{python}
+warped_bgr, transform_matrix = warp_quadrat(
+    image_bgr,
+    pts_src,
+    width=WIDTH,
+    height=HEIGHT,
+)
+warped_rgb = cv2.cvtColor(warped_bgr, cv2.COLOR_BGR2RGB)
+transform_matrix
+```
+
+```{python}
+plt.figure(figsize=(8, 8))
+plt.imshow(warped_rgb)
+plt.title("Warped image (top-down view)")
+plt.axis("off")
+plt.show()
+```
+
+# 4. 緑領域を抽出する
+
+次に、補正後画像を HSV 色空間に変換し、緑領域を抽出します。
+
+元スクリプトと同様に、しきい値は対話的に調整します。
+`q` を押した時点の設定が採用されます。
+
+```{python}
+hsv = cv2.cvtColor(warped_bgr, cv2.COLOR_BGR2HSV)
+```
+
+```{python}
+green_initial = {
+    "H min": 35,
+    "H max": 95,
+    "S min": 0,
+    "S max": 255,
+    "V min": 0,
+    "V max": 255,
+}
+
+green_params, mask_green = interactive_hsv_mask(
+    hsv_image=hsv,
+    original_bgr=warped_bgr,
+    window_name="Green Classifier",
+    initial_values=green_initial,
+)
+
+green_params
+```
+
+緑マスクを可視化して確認します。
+
+```{python}
+green_overlay = warped_rgb.copy()
+green_overlay[mask_green > 0] = [180, 180, 0]
+
+plt.figure(figsize=(8, 8))
+plt.imshow(green_overlay)
+plt.title("Green region overlay")
+plt.axis("off")
+plt.show()
+```
+
+```{python}
+total_pixels = mask_green.shape[0] * mask_green.shape[1]
+green_pixels = cv2.countNonZero(mask_green)
+green_ratio = green_pixels / total_pixels
+print(f"green_ratio = {green_ratio:.4f} ({green_ratio * 100:.2f}%)")
+```
+
+# 5. 緑以外からリターを抽出する
+
+元スクリプトでは、まず緑を除外し、その残りからリターを抽出しています。
+
+```{python}
+mask_not_green = cv2.bitwise_not(mask_green)
+```
+
+ここでも HSV の範囲を対話的に調整します。
+
+```{python}
+litter_initial = {
+    "H min": 0,
+    "H max": 179,
+    "S min": 0,
+    "S max": 255,
+    "V min": 0,
+    "V max": 150,
+}
+
+litter_params_raw, mask_litter_raw = interactive_hsv_mask(
+    hsv_image=hsv,
+    original_bgr=warped_bgr,
+    window_name="Litter candidate",
+    initial_values=litter_initial,
+)
+
+mask_litter = cv2.bitwise_and(mask_litter_raw, mask_not_green)
+litter_params = litter_params_raw
+litter_params
+```
+
+# 6. 地面を残差として定義する
+
+ここでは、
+
+- 緑領域: `mask_green`
+- リター領域: `mask_litter`
+- 地面: `緑でもリターでもない領域`
+
+として定義します。
+
+```{python}
+mask_soil = cv2.bitwise_and(mask_not_green, cv2.bitwise_not(mask_litter))
+
+litter_pixels = cv2.countNonZero(mask_litter)
+soil_pixels = cv2.countNonZero(mask_soil)
+
+litter_ratio = litter_pixels / total_pixels
+soil_ratio = soil_pixels / total_pixels
+
+print(f"green_ratio  = {green_ratio:.4f} ({green_ratio * 100:.2f}%)")
+print(f"litter_ratio = {litter_ratio:.4f} ({litter_ratio * 100:.2f}%)")
+print(f"soil_ratio   = {soil_ratio:.4f} ({soil_ratio * 100:.2f}%)")
+print(f"sum          = {(green_ratio + litter_ratio + soil_ratio):.4f}")
+```
+
+# 7. 最終分類画像を作る
+
+元スクリプトの配色を引き継ぎ、
+
+- 緑: `(180, 180, 0)`
+- リター: `(0, 170, 255)`
+- 地面: `(204, 102, 153)`
+
+で塗り分けます。
+
+```{python}
+segmented_bgr = warped_bgr.copy()
+segmented_bgr[mask_green > 0] = (180, 180, 0)
+segmented_bgr[mask_litter > 0] = (0, 170, 255)
+segmented_bgr[mask_soil > 0] = (204, 102, 153)
+
+segmented_rgb = cv2.cvtColor(segmented_bgr, cv2.COLOR_BGR2RGB)
+```
+
+```{python}
+plt.figure(figsize=(8, 8))
+plt.imshow(segmented_rgb)
+plt.title("Segmented quadrat image")
+plt.axis("off")
+plt.show()
+```
+
+# 8. 結果を表として確認する
+
+```{python}
+summary_df = pd.DataFrame({
+    "class": ["green", "litter", "soil"],
+    "ratio": [green_ratio, litter_ratio, soil_ratio],
+    "percent": [green_ratio * 100, litter_ratio * 100, soil_ratio * 100],
+})
+summary_df
+```
+
+# 9. CSV と画像を保存する
+
+最後に、割合・しきい値・画像を保存します。
+
+```{python}
+csv_path, warped_path, segmented_path = save_results(
+    image_path=image_path,
+    output_dir=OUTPUT_DIR,
+    warped=warped_bgr,
+    segmented=segmented_bgr,
+    green_ratio=green_ratio,
+    litter_ratio=litter_ratio,
+    soil_ratio=soil_ratio,
+    green_params=green_params,
+    litter_params=litter_params,
+)
+
+print(csv_path)
+print(warped_path)
+print(segmented_path)
+```
+
+# 補足
+
+## この qmd 版で変えた点
+
+元のスクリプトでは 1 本の処理として連続実行していましたが、qmd 版では次のように整理しました。
+
+- 手順ごとにセクションを分けた
+- 関数化して再利用しやすくした
+- 各段階で画像や表をその場で確認できるようにした
+- Quarto の `params` で画像パスや出力先を管理できるようにした
+
+## さらに改善できる点
+
+今後さらに使いやすくするなら、次のような拡張が考えられます。
+
+1. クリック座標を保存して再利用する
+2. HSV しきい値を YAML や CSV に保存する
+3. 複数画像を一括処理する
+4. GUI 操作なしで再現できる完全自動版を別に用意する
+
+## 再現性を上げる運用
+
+特に qmd と相性がよいのは、
+
+- 一度決めた 4 点座標を保存する
+- 一度決めた HSV 範囲を保存する
+- 2 回目以降はその値を読み込んで自動実行する
+
+という形です。
+
+これを行うと、**最初だけ対話的に調整し、その後は同条件で半自動処理する**流れにできます。
