@@ -141,13 +141,18 @@ def order_points_by_angle(pts):
 ## 4 点クリック用の関数
 
 ```{python}
-def pick_four_points(image_bgr):
+def pick_four_points(image_bgr, preset_points=None):
+    if preset_points is not None:
+        if len(preset_points) != 4:
+            raise ValueError("preset_points には 4 点の座標を指定してください。")
+        return order_points_by_angle(preset_points)
+
     image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
     clicked_points = []
 
     fig, ax = plt.subplots(figsize=(8, 8))
     ax.imshow(image_rgb)
-    ax.set_title("Click 4 points (corners of the quadrat)")
+    ax.set_title("Click 4 points (corners of the quadrat)\nClose window if done")
     ax.axis("off")
 
     def on_click(event):
@@ -161,9 +166,15 @@ def pick_four_points(image_bgr):
 
     cid = fig.canvas.mpl_connect('button_press_event', on_click)
     plt.show()
+    fig.canvas.mpl_disconnect(cid)
+    plt.close(fig)
 
     if len(clicked_points) != 4:
-        raise RuntimeError("4点が選択されていません。")
+        raise RuntimeError(
+            "4点が選択されていません。"
+            " Notebook では `%matplotlib widget` を有効化するか、"
+            " `PTS_SRC_MANUAL` に座標を直接指定してください。"
+        )
 
     return order_points_by_angle(clicked_points)
 ```
@@ -362,9 +373,21 @@ plt.show()
 - あとで `order_points_by_angle()` で順序を補正する
 
 ```{python}
-pts_src = pick_four_points(image_bgr)
+PTS_SRC_MANUAL = None
+# 例:
+# PTS_SRC_MANUAL = [
+#     (120, 100),  # 左上
+#     (880, 95),   # 右上
+#     (900, 910),  # 右下
+#     (110, 930),  # 左下
+# ]
+
+pts_src = pick_four_points(image_bgr, preset_points=PTS_SRC_MANUAL)
 pts_src
 ```
+
+Notebook 環境で 4 点クリックが取りづらい場合は、`PTS_SRC_MANUAL` に座標を直接入れる運用がおすすめです。
+一度座標を決めて保存しておけば、2 回目以降は再現性高く自動で実行できます。
 
 クリックした点の位置を元画像上に重ねて確認します。
 
