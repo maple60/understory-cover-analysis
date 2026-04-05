@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>下層植生の解析について – 下層植生の解析</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-158031087360bce0ff56dc785ce39e06.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">下層植生の解析</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#目的" id="toc-目的" class="nav-link active" data-scroll-target="#目的">目的</a></li>
+  <li><a href="#解析の流れ" id="toc-解析の流れ" class="nav-link" data-scroll-target="#解析の流れ">解析の流れ</a></li>
+  <li><a href="#ライブラリの読み込み" id="toc-ライブラリの読み込み" class="nav-link" data-scroll-target="#ライブラリの読み込み">ライブラリの読み込み</a></li>
+  <li><a href="#パラメータ設定" id="toc-パラメータ設定" class="nav-link" data-scroll-target="#パラメータ設定">パラメータ設定</a></li>
+  <li><a href="#補助関数" id="toc-補助関数" class="nav-link" data-scroll-target="#補助関数">補助関数</a>
+  <ul class="collapse">
+  <li><a href="#点の順序を整える" id="toc-点の順序を整える" class="nav-link" data-scroll-target="#点の順序を整える">4点の順序を整える</a></li>
+  <li><a href="#射影変換" id="toc-射影変換" class="nav-link" data-scroll-target="#射影変換">射影変換</a></li>
+  <li><a href="#hsv-範囲でマスクを作成" id="toc-hsv-範囲でマスクを作成" class="nav-link" data-scroll-target="#hsv-範囲でマスクを作成">HSV 範囲でマスクを作成</a></li>
+  <li><a href="#結果保存" id="toc-結果保存" class="nav-link" data-scroll-target="#結果保存">結果保存</a></li>
+  </ul></li>
+  <li><a href="#解析" id="toc-解析" class="nav-link" data-scroll-target="#解析">解析</a>
+  <ul class="collapse">
+  <li><a href="#画像の読み込み" id="toc-画像の読み込み" class="nav-link" data-scroll-target="#画像の読み込み">1. 画像の読み込み</a></li>
+  <li><a href="#コドラートの四隅を指定する" id="toc-コドラートの四隅を指定する" class="nav-link" data-scroll-target="#コドラートの四隅を指定する">2. コドラートの四隅を指定する</a></li>
+  </ul></li>
+  <li><a href="#射影変換で正方形に補正する" id="toc-射影変換で正方形に補正する" class="nav-link" data-scroll-target="#射影変換で正方形に補正する">3. 射影変換で正方形に補正する</a></li>
+  <li><a href="#緑領域を抽出する" id="toc-緑領域を抽出する" class="nav-link" data-scroll-target="#緑領域を抽出する">4. 緑領域を抽出する</a></li>
+  <li><a href="#緑以外からリターを抽出する" id="toc-緑以外からリターを抽出する" class="nav-link" data-scroll-target="#緑以外からリターを抽出する">5. 緑以外からリターを抽出する</a></li>
+  <li><a href="#地面を残差として定義する" id="toc-地面を残差として定義する" class="nav-link" data-scroll-target="#地面を残差として定義する">6. 地面を残差として定義する</a></li>
+  <li><a href="#最終分類画像を作る" id="toc-最終分類画像を作る" class="nav-link" data-scroll-target="#最終分類画像を作る">7. 最終分類画像を作る</a></li>
+  <li><a href="#結果を表として確認する" id="toc-結果を表として確認する" class="nav-link" data-scroll-target="#結果を表として確認する">8. 結果を表として確認する</a></li>
+  <li><a href="#csv-と画像を保存する" id="toc-csv-と画像を保存する" class="nav-link" data-scroll-target="#csv-と画像を保存する">9. CSV と画像を保存する</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">下層植生の解析について</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="目的" class="level2">
+<h2 class="anchored" data-anchor-id="目的">目的</h2>
+<p>このノートブックは、下層植生の被覆率を推定するための画像解析の手順を説明するものです。 下層植生にコドラートという1m四方の区画を設置し、その区画を撮影した画像を解析して、植物被覆、リター（落葉・落枝）、地面の割合を推定します。</p>
+</section>
+<section id="解析の流れ" class="level2">
+<h2 class="anchored" data-anchor-id="解析の流れ">解析の流れ</h2>
+<p>次の流れで解析を進めます。</p>
+<ol type="1">
+<li>画像を読み込む</li>
+<li>コドラートの四隅を指定する</li>
+<li>射影変換で真上から見た正方形画像に補正する</li>
+<li>HSVしきい値で緑領域を抽出する</li>
+<li>緑以外の領域からリター(落葉・落枝)を抽出する</li>
+<li>残りを地面として扱う</li>
+<li>面積割合を計算し、CSVと画像を保存する</li>
+</ol>
+<p>なお、実際の解析では、2のコドラートの四隅の指定や4のHSVしきい値の調整は<a href="https://docs.python.org/3/library/tkinter.html"><code>tkinter</code></a>というPythonのGUIライブラリ<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>を使って、画像を見ながらインタラクティブに行いました。</p>
+<p>本ノートブックでは、コドラートの四隅の座標やHSVのしきい値を固定値で指定して、解析の流れを説明します。</p>
+</section>
+<section id="ライブラリの読み込み" class="level2">
+<h2 class="anchored" data-anchor-id="ライブラリの読み込み">ライブラリの読み込み</h2>
+<div id="205bb860" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="パラメータ設定" class="level2">
+<h2 class="anchored" data-anchor-id="パラメータ設定">パラメータ設定</h2>
+<p>生きた植物の緑の部分や、リターの明るめの茶色を抽出するために、HSV色空間を利用して、色相（Hue）と彩度（Saturation）をしきい値で指定します。 今回は、ここで手動で指定した値を使って解析を行いますが、実際の解析では、画像を見ながらインタラクティブに調整していました。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>HSV色空間
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>HSV色空間とは、色を表現する方法の一つで、色相（Hue）、彩度（Saturation）、明度（Value）という3つの要素で色を表現します。</p>
+<ul>
+<li>色相（Hue）: 色の種類を表す要素で、0から179の値で円のように表されます (色相環)。赤が0、緑が60、青が120に対応します。</li>
+<li>彩度（Saturation）: 色の鮮やかさを表す要素で、0から255の値で表されます。0は無彩色（グレー）、255は最も鮮やかな色になります。</li>
+<li>明度（Value）: 色の明るさを表す要素で、0から255の値で表されます。0は完全な黒、255は完全な白になります。</li>
+</ul>
+<p>詳細については、<a href="../notebooks/hsv_color_space.html">HSV色空間について</a>をご覧ください。</p>
+</div>
+</div>
+<div id="f97abe47" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>IMAGE_PATH <span class="op">=</span> Path(<span class="st">"data/forest_cover_example.JPG"</span>)  <span class="co"># 解析する画像のパス</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>WIDTH <span class="op">=</span> <span class="dv">1000</span>  <span class="co"># 出力画像の幅</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>HEIGHT <span class="op">=</span> <span class="dv">1000</span>  <span class="co"># 出力画像の高さ</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>OUTPUT_DIR <span class="op">=</span> Path(<span class="st">"output"</span>)  <span class="co"># 結果の出力先ディレクトリ</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># コドラートの四隅の座標</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 画像によって変わるので、必要に応じて更新してください</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>PTS_SRC_MANUAL <span class="op">=</span> [</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">970</span>, <span class="dv">230</span>),  <span class="co"># 左上</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">3000</span>, <span class="dv">95</span>),  <span class="co"># 右上</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">2950</span>, <span class="dv">2450</span>),  <span class="co"># 右下</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">400</span>, <span class="dv">2280</span>),  <span class="co"># 左下</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 緑の領域を抽出するためのHSV範囲</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 画像によって変わるので、必要に応じて更新してください</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>GREEN_HSV <span class="op">=</span> {</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hmin"</span>: <span class="dv">35</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hmax"</span>: <span class="dv">95</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"smin"</span>: <span class="dv">0</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"smax"</span>: <span class="dv">255</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"vmin"</span>: <span class="dv">0</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"vmax"</span>: <span class="dv">255</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># リターの領域を抽出するためのHSV範囲</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 画像によって変わるので、必要に応じて更新してください</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>LITTER_HSV <span class="op">=</span> {</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hmin"</span>: <span class="dv">0</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hmax"</span>: <span class="dv">179</span>,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"smin"</span>: <span class="dv">0</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"smax"</span>: <span class="dv">255</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"vmin"</span>: <span class="dv">0</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"vmax"</span>: <span class="dv">150</span>,</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 出力設定</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>OUTPUT_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>(OUTPUT_DIR <span class="op">/</span> <span class="st">"figures"</span> <span class="op">/</span> <span class="st">"quadrat_warped"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>(OUTPUT_DIR <span class="op">/</span> <span class="st">"figures"</span> <span class="op">/</span> <span class="st">"quadrat_segmented"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="補助関数" class="level2">
+<h2 class="anchored" data-anchor-id="補助関数">補助関数</h2>
+<section id="点の順序を整える" class="level3">
+<h3 class="anchored" data-anchor-id="点の順序を整える">4点の順序を整える</h3>
+<p>四隅の座標の順序は、射影変換の関数に渡す前に、<strong>左上 → 右上 → 右下 → 左下</strong> の順になるように整える必要があります。</p>
+<div id="c16b49f7" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> order_points_by_angle(pts):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pts <span class="op">=</span> np.array(pts, dtype<span class="op">=</span><span class="st">"float32"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    center <span class="op">=</span> np.mean(pts, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    angles <span class="op">=</span> np.arctan2(pts[:, <span class="dv">1</span>] <span class="op">-</span> center[<span class="dv">1</span>], pts[:, <span class="dv">0</span>] <span class="op">-</span> center[<span class="dv">0</span>])</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    ordered <span class="op">=</span> pts[np.argsort(angles)]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    idx_topleft <span class="op">=</span> np.argmin(np.<span class="bu">sum</span>(ordered, axis<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ordered <span class="op">=</span> np.roll(ordered, <span class="op">-</span>idx_topleft, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ordered</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="射影変換" class="level3">
+<h3 class="anchored" data-anchor-id="射影変換">射影変換</h3>
+<p>射影変換とは、画像の中の特定の4点を、別の4点に対応させる変換のことです。 今回は、区画の四隅を、幅1000×高さ1000の正方形の四隅に対応させることで、<strong>区画を真上から見たような画像に補正</strong>します。</p>
+<div id="0fe14b07" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> warp_quadrat(image_bgr, pts_src, width<span class="op">=</span><span class="dv">1000</span>, height<span class="op">=</span><span class="dv">1000</span>):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    pts_dst <span class="op">=</span> np.array([</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        [<span class="dv">0</span>, <span class="dv">0</span>],</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        [width <span class="op">-</span> <span class="dv">1</span>, <span class="dv">0</span>],</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        [width <span class="op">-</span> <span class="dv">1</span>, height <span class="op">-</span> <span class="dv">1</span>],</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        [<span class="dv">0</span>, height <span class="op">-</span> <span class="dv">1</span>],</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    ], dtype<span class="op">=</span><span class="st">"float32"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    M <span class="op">=</span> cv2.getPerspectiveTransform(pts_src, pts_dst)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    warped <span class="op">=</span> cv2.warpPerspective(image_bgr, M, (width, height))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> warped, M</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="hsv-範囲でマスクを作成" class="level3">
+<h3 class="anchored" data-anchor-id="hsv-範囲でマスクを作成">HSV 範囲でマスクを作成</h3>
+<div id="e2cdb56b" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_hsv_mask(hsv_image, hsv_params):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    lower <span class="op">=</span> np.array([hsv_params[<span class="st">"hmin"</span>], hsv_params[<span class="st">"smin"</span>], hsv_params[<span class="st">"vmin"</span>]])</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    upper <span class="op">=</span> np.array([hsv_params[<span class="st">"hmax"</span>], hsv_params[<span class="st">"smax"</span>], hsv_params[<span class="st">"vmax"</span>]])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> cv2.inRange(hsv_image, lower, upper)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="結果保存" class="level3">
+<h3 class="anchored" data-anchor-id="結果保存">結果保存</h3>
+<div id="32d47d30" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_results(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    image_path,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    output_dir,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    warped,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    segmented,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    green_ratio,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    litter_ratio,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    soil_ratio,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    green_params,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    litter_params,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    image_path <span class="op">=</span> Path(image_path)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    basename_with_ext <span class="op">=</span> image_path.name</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    basename <span class="op">=</span> image_path.stem</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    time_str <span class="op">=</span> datetime.now().strftime(<span class="st">"%Y/%m/</span><span class="sc">%d</span><span class="st"> %H:%M:%S"</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"file_path"</span>: [<span class="bu">str</span>(image_path)],</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"file_name"</span>: [basename_with_ext],</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"time"</span>: [time_str],</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">"green_ratio"</span>: [green_ratio],</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">"litter_ratio"</span>: [litter_ratio],</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">"soil_ratio"</span>: [soil_ratio],</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hmin_green"</span>: [green_params[<span class="st">"hmin"</span>]],</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hmax_green"</span>: [green_params[<span class="st">"hmax"</span>]],</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">"smin_green"</span>: [green_params[<span class="st">"smin"</span>]],</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"smax_green"</span>: [green_params[<span class="st">"smax"</span>]],</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">"vmin_green"</span>: [green_params[<span class="st">"vmin"</span>]],</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">"vmax_green"</span>: [green_params[<span class="st">"vmax"</span>]],</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hmin_litter"</span>: [litter_params[<span class="st">"hmin"</span>]],</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hmax_litter"</span>: [litter_params[<span class="st">"hmax"</span>]],</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        <span class="st">"smin_litter"</span>: [litter_params[<span class="st">"smin"</span>]],</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">"smax_litter"</span>: [litter_params[<span class="st">"smax"</span>]],</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">"vmin_litter"</span>: [litter_params[<span class="st">"vmin"</span>]],</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>        <span class="st">"vmax_litter"</span>: [litter_params[<span class="st">"vmax"</span>]],</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    csv_path <span class="op">=</span> output_dir <span class="op">/</span> <span class="st">"classify_quadrat_regions.csv"</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> csv_path.exists():</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>        existing_data <span class="op">=</span> pd.read_csv(csv_path)</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>        combined <span class="op">=</span> pd.concat([existing_data, df], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>        combined <span class="op">=</span> combined.drop_duplicates(subset<span class="op">=</span><span class="st">"file_name"</span>, keep<span class="op">=</span><span class="st">"last"</span>)</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>        combined <span class="op">=</span> df</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    combined.to_csv(csv_path, index<span class="op">=</span><span class="va">False</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    warped_path <span class="op">=</span> output_dir <span class="op">/</span> <span class="st">"figures"</span> <span class="op">/</span> <span class="st">"quadrat_warped"</span> <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>basename<span class="sc">}</span><span class="ss">.jpg"</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    segmented_path <span class="op">=</span> output_dir <span class="op">/</span> <span class="st">"figures"</span> <span class="op">/</span> <span class="st">"quadrat_segmented"</span> <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>basename<span class="sc">}</span><span class="ss">.jpg"</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    cv2.imwrite(<span class="bu">str</span>(warped_path), warped)</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>    cv2.imwrite(<span class="bu">str</span>(segmented_path), segmented)</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> csv_path, warped_path, segmented_path</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="解析" class="level2">
+<h2 class="anchored" data-anchor-id="解析">解析</h2>
+<section id="画像の読み込み" class="level3">
+<h3 class="anchored" data-anchor-id="画像の読み込み">1. 画像の読み込み</h3>
+<p>ここから実際の解析の手順を説明します。 まずは、解析する画像を読み込みます。</p>
+<div id="3d3cc824" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> IMAGE_PATH.exists():</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">FileNotFoundError</span>(<span class="ss">f"画像が見つかりません: </span><span class="sc">{</span>IMAGE_PATH<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>image_bgr <span class="op">=</span> cv2.imread(<span class="bu">str</span>(IMAGE_PATH))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> image_bgr <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="st">"画像の読み込みに失敗しました。"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>image_rgb <span class="op">=</span> cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"画像ファイルのパス:"</span>, IMAGE_PATH)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"画像のサイズ:"</span>, image_bgr.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>画像ファイルのパス: data/forest_cover_example.JPG
+画像のサイズ: (2832, 4240, 3)</code></pre>
+</div>
+</div>
+<p>読み込んだ画像を確認します。</p>
+<div id="6eda662c" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(image_rgb)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="classify_quadrat_regions_explained_files/figure-html/cell-9-output-1.png" width="614" height="417" class="figure-img"></p>
+<figcaption>読み込んだ画像</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="コドラートの四隅を指定する" class="level3">
+<h3 class="anchored" data-anchor-id="コドラートの四隅を指定する">2. コドラートの四隅を指定する</h3>
+<p>コドラートの四隅を指定します。</p>
+<div id="bcc2a8f1" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pts_src <span class="op">=</span> order_points_by_angle(PTS_SRC_MANUAL)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pts_src</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>array([[ 970.,  230.],
+       [3000.,   95.],
+       [2950., 2450.],
+       [ 400., 2280.]], dtype=float32)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>画像処理における座標系
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>画像処理においては、基本的に左上が原点(0, 0)で、右に行くほどx座標が大きくなり、下に行くほどy座標が大きくなる座標系が使われます。 数学の教科書などで使われる、原点は中心で、右に行くほどx座標が大きくなり、上に行くほどy座標が大きくなる座標系とは逆になることに注意してください。</p>
+</div>
+</div>
+<p>画像に指定した4点をプロットして、正しい位置に指定できているか確認します。</p>
+<div id="a0940456" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(image_rgb)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (x, y) <span class="kw">in</span> <span class="bu">enumerate</span>(pts_src):</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    ax.scatter(x, y, c<span class="op">=</span><span class="st">"red"</span>, s<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    ax.text(x <span class="op">+</span> <span class="dv">10</span>, y <span class="op">+</span> <span class="dv">10</span>, <span class="ss">f"P</span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>, color<span class="op">=</span><span class="st">"yellow"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Selected quadrat corners"</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="classify_quadrat_regions_explained_files/figure-html/cell-11-output-1.png" width="614" height="437" class="figure-img"></p>
+<figcaption>指定したコドラートの四隅の位置を確認する</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="射影変換で正方形に補正する" class="level1">
+<h1>3. 射影変換で正方形に補正する</h1>
+<p><code>src_pts</code>で指定した4点を、幅1000×高さ1000の正方形の四隅に対応させる射影変換を行います。 これにより、区画を真上から見たような画像に補正し、解析しやすくします。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>射影変換
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>射影変換 (perspective transformation) とは、画像の中の特定の4点を、別の4点に対応させる変換のことです。 この変換には、画像の拡大・縮小、回転、平行移動に加えて、遠近法による歪みも補正することができます。</p>
+<p>これにより、任意の四角形を別の四角形に移すことができるため、斜めから撮影した画像を、真上から見たような画像に補正することができます。</p>
+<p>詳細については、<a href="../notebooks/projective_transformation.html">射影変換について</a>をご覧ください。</p>
+</div>
+</div>
+<div id="1bd13fa3" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>warped_bgr, transform_matrix <span class="op">=</span> warp_quadrat(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    image_bgr<span class="op">=</span>image_bgr,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    pts_src<span class="op">=</span>pts_src,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span>WIDTH,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span>HEIGHT,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>warped_rgb <span class="op">=</span> cv2.cvtColor(warped_bgr, cv2.COLOR_BGR2RGB)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>transform_matrix</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>array([[ 6.32883634e-01,  1.75972523e-01, -6.54370805e+02],
+       [ 4.64837471e-02,  6.98977827e-01, -2.05854135e+02],
+       [ 8.22125317e-05,  1.64443690e-04,  1.00000000e+00]])</code></pre>
+</div>
+</div>
+<div id="912aa05f" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(warped_rgb)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="classify_quadrat_regions_explained_files/figure-html/cell-13-output-1.png" width="611" height="611" class="figure-img"></p>
+<figcaption>射影変換した画像(真上から見たような画像)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="緑領域を抽出する" class="level1">
+<h1>4. 緑領域を抽出する</h1>
+<p>生きた植物がどのくらいコドラートを被覆しているかを推定するために、緑の領域を抽出します。 今回は、HSV色空間で指定した範囲を使って、緑の領域を抽出します。</p>
+<p>しかし、植物によって葉の色が異なったり、光の当たり方によって同じ葉でも色が変わったりするため、緑の領域を完全に抽出することは難しいことが多いです。</p>
+<div id="067eaf94" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>hsv <span class="op">=</span> cv2.cvtColor(warped_bgr, cv2.COLOR_BGR2HSV)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>mask_green <span class="op">=</span> make_hsv_mask(hsv, GREEN_HSV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="3631ab55" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>green_overlay <span class="op">=</span> warped_rgb.copy()</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>green_overlay[mask_green <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> [<span class="dv">180</span>, <span class="dv">180</span>, <span class="dv">0</span>]</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>plt.imshow(green_overlay)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Green region overlay"</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="classify_quadrat_regions_explained_files/figure-html/cell-15-output-1.png" width="611" height="631" class="figure-img"></p>
+<figcaption>緑の領域を抽出したマスク画像</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>緑の領域が全体の何割を占めているか計算します。 これが<strong>被度の推定値</strong>になります。</p>
+<div id="1167e37f" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>total_pixels <span class="op">=</span> mask_green.shape[<span class="dv">0</span>] <span class="op">*</span> mask_green.shape[<span class="dv">1</span>]</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>green_pixels <span class="op">=</span> cv2.countNonZero(mask_green)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>green_ratio <span class="op">=</span> green_pixels <span class="op">/</span> total_pixels</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"green_ratio = </span><span class="sc">{</span>green_ratio<span class="sc">:.4f}</span><span class="ss"> (</span><span class="sc">{</span>green_ratio <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>green_ratio = 0.1843 (18.43%)</code></pre>
+</div>
+</div>
+</section>
+<section id="緑以外からリターを抽出する" class="level1">
+<h1>5. 緑以外からリターを抽出する</h1>
+<p>植物被覆以外の領域は、リター（落葉・落枝）と地面に分けて考えることができます。 リターは、明るめの茶色の領域として抽出できることが多いです。</p>
+<p>ここでは、緑の領域を除いた領域から、リターを抽出します。 これで、緑の領域、リターの領域、地面の領域の3つに分類することができます。</p>
+<div id="39a5353c" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mask_not_green <span class="op">=</span> cv2.bitwise_not(mask_green)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>mask_litter_raw <span class="op">=</span> make_hsv_mask(hsv, LITTER_HSV)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>mask_litter <span class="op">=</span> cv2.bitwise_and(mask_litter_raw, mask_not_green)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="地面を残差として定義する" class="level1">
+<h1>6. 地面を残差として定義する</h1>
+<p>植物の緑の領域とリターの領域を抽出した後、残りの領域を地面として定義します。 実際にはリターと地面の境界は曖昧なことが多いですが、ここでは単純に緑とリター以外を地面とします。</p>
+<div id="0fb92cd8" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>mask_soil <span class="op">=</span> cv2.bitwise_and(mask_not_green, cv2.bitwise_not(mask_litter))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>litter_pixels <span class="op">=</span> cv2.countNonZero(mask_litter)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>soil_pixels <span class="op">=</span> cv2.countNonZero(mask_soil)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>litter_ratio <span class="op">=</span> litter_pixels <span class="op">/</span> total_pixels</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>soil_ratio <span class="op">=</span> soil_pixels <span class="op">/</span> total_pixels</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"green_ratio  = </span><span class="sc">{</span>green_ratio<span class="sc">:.4f}</span><span class="ss"> (</span><span class="sc">{</span>green_ratio <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"litter_ratio = </span><span class="sc">{</span>litter_ratio<span class="sc">:.4f}</span><span class="ss"> (</span><span class="sc">{</span>litter_ratio <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"soil_ratio   = </span><span class="sc">{</span>soil_ratio<span class="sc">:.4f}</span><span class="ss"> (</span><span class="sc">{</span>soil_ratio <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"sum          = </span><span class="sc">{</span>(green_ratio <span class="op">+</span> litter_ratio <span class="op">+</span> soil_ratio)<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>green_ratio  = 0.1843 (18.43%)
+litter_ratio = 0.7140 (71.40%)
+soil_ratio   = 0.1017 (10.17%)
+sum          = 1.0000</code></pre>
+</div>
+</div>
+</section>
+<section id="最終分類画像を作る" class="level1">
+<h1>7. 最終分類画像を作る</h1>
+<p>植物被覆、リター、地面の領域を色分けして、最終的な分類画像を作ります。 植物被覆を緑、リターをオレンジ、地面を紫で表示します。</p>
+<div id="fd129540" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>segmented_bgr <span class="op">=</span> warped_bgr.copy()</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>segmented_bgr[mask_green <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> (<span class="dv">115</span>, <span class="dv">158</span>, <span class="dv">0</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>segmented_bgr[mask_litter <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">159</span>, <span class="dv">230</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>segmented_bgr[mask_soil <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> (<span class="dv">167</span>, <span class="dv">121</span>, <span class="dv">204</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>segmented_rgb <span class="op">=</span> cv2.cvtColor(segmented_bgr, cv2.COLOR_BGR2RGB)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="d75e4e32" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(segmented_rgb)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>legend_handles <span class="op">=</span> [</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    mpatches.Patch(color<span class="op">=</span>(<span class="dv">0</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">158</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">115</span> <span class="op">/</span> <span class="dv">255</span>), label<span class="op">=</span><span class="st">"Green"</span>),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    mpatches.Patch(color<span class="op">=</span>(<span class="dv">230</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">159</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">0</span> <span class="op">/</span> <span class="dv">255</span>), label<span class="op">=</span><span class="st">"Litter"</span>),</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    mpatches.Patch(color<span class="op">=</span>(<span class="dv">204</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">121</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">167</span> <span class="op">/</span> <span class="dv">255</span>), label<span class="op">=</span><span class="st">"Soil"</span>),</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>plt.legend(handles<span class="op">=</span>legend_handles, loc<span class="op">=</span><span class="st">"upper right"</span>, frameon<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="classify_quadrat_regions_explained_files/figure-html/cell-20-output-1.png" width="611" height="611" class="figure-img"></p>
+<figcaption>分類結果の画像</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>もとの画像と並べて表示します。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots()</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>axes.imshow(warped_rgb)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>axes.axis(<span class="st">"off"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots()</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>axes.imshow(segmented_rgb)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>axes.axis(<span class="st">"off"</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="9625404c" class="cell quarto-layout-panel" data-layout-ncol="2" data-execution_count="20">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="classify_quadrat_regions_explained_files/figure-html/cell-21-output-1.png" width="389" height="389" class="figure-img"></p>
+<figcaption>射影変換した画像</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="classify_quadrat_regions_explained_files/figure-html/cell-21-output-2.png" width="389" height="389" class="figure-img"></p>
+<figcaption>分類結果の画像</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="結果を表として確認する" class="level1">
+<h1>8. 結果を表として確認する</h1>
+<p>データフレームにまとめて、緑、リター、地面の割合を確認します。</p>
+<div id="058c47ca" class="cell" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>summary_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"class"</span>: [<span class="st">"green"</span>, <span class="st">"litter"</span>, <span class="st">"soil"</span>],</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ratio"</span>: [green_ratio, litter_ratio, soil_ratio],</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"percent"</span>: [green_ratio <span class="op">*</span> <span class="dv">100</span>, litter_ratio <span class="op">*</span> <span class="dv">100</span>, soil_ratio <span class="op">*</span> <span class="dv">100</span>],</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>summary_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">class</th>
+<th data-quarto-table-cell-role="th">ratio</th>
+<th data-quarto-table-cell-role="th">percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>green</td>
+<td>0.18431</td>
+<td>18.431</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>litter</td>
+<td>0.71397</td>
+<td>71.397</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>soil</td>
+<td>0.10172</td>
+<td>10.172</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="csv-と画像を保存する" class="level1">
+<h1>9. CSV と画像を保存する</h1>
+<p>最後に、解析結果をCSVファイルと画像ファイルとして保存します。 CSVファイルには、画像のファイル名や解析日時、緑・リター・地面の割合、HSVのしきい値などを保存します。 画像ファイルは、補正した画像と、分類結果を色分けした画像を保存します。</p>
+<div id="5a55854b" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>csv_path, warped_path, segmented_path <span class="op">=</span> save_results(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    image_path<span class="op">=</span>IMAGE_PATH,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    output_dir<span class="op">=</span>OUTPUT_DIR,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    warped<span class="op">=</span>warped_bgr,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    segmented<span class="op">=</span>segmented_bgr,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    green_ratio<span class="op">=</span>green_ratio,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    litter_ratio<span class="op">=</span>litter_ratio,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    soil_ratio<span class="op">=</span>soil_ratio,</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    green_params<span class="op">=</span>GREEN_HSV,</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    litter_params<span class="op">=</span>LITTER_HSV,</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CSV path: </span><span class="sc">{</span>csv_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Warped image path: </span><span class="sc">{</span>warped_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Segmented image path: </span><span class="sc">{</span>segmented_path<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CSV path: output/classify_quadrat_regions.csv
+Warped image path: output/figures/quadrat_warped/forest_cover_example.jpg
+Segmented image path: output/figures/quadrat_segmented/forest_cover_example.jpg</code></pre>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>GUI (Graphical User Interface) とは、マウスやキーボードを使って視覚的に操作できるインターフェースのことです。<code>tkinter</code>はPythonでGUIアプリケーションを作成するための標準ライブラリです。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "下層植生の解析について"</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: false</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co">  error: true</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## 目的</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>このノートブックは、下層植生の被覆率を推定するための画像解析の手順を説明するものです。</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>下層植生にコドラートという1m四方の区画を設置し、その区画を撮影した画像を解析して、植物被覆、リター（落葉・落枝）、地面の割合を推定します。</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## 解析の流れ</span></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>次の流れで解析を進めます。</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>画像を読み込む</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>コドラートの四隅を指定する</span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>射影変換で真上から見た正方形画像に補正する</span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>HSVしきい値で緑領域を抽出する</span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>緑以外の領域からリター(落葉・落枝)を抽出する</span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>残りを地面として扱う</span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>面積割合を計算し、CSVと画像を保存する</span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>なお、実際の解析では、2のコドラートの四隅の指定や4のHSVしきい値の調整は<span class="co">[</span><span class="ot">`tkinter`</span><span class="co">](https://docs.python.org/3/library/tkinter.html)</span>というPythonのGUIライブラリ<span class="ot">[^1]</span>を使って、画像を見ながらインタラクティブに行いました。</span>
+<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a><span class="ot">[^1]: </span>GUI (Graphical User Interface) とは、マウスやキーボードを使って視覚的に操作できるインターフェースのことです。<span class="in">`tkinter`</span>はPythonでGUIアプリケーションを作成するための標準ライブラリです。</span>
+<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a>本ノートブックでは、コドラートの四隅の座標やHSVのしきい値を固定値で指定して、解析の流れを説明します。</span>
+<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## ライブラリの読み込み</span></span>
+<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-42"><a href="#cb29-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-43"><a href="#cb29-43" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb29-44"><a href="#cb29-44" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb29-45"><a href="#cb29-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-46"><a href="#cb29-46" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb29-47"><a href="#cb29-47" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb29-48"><a href="#cb29-48" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb29-49"><a href="#cb29-49" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb29-50"><a href="#cb29-50" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span>
+<span id="cb29-51"><a href="#cb29-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-52"><a href="#cb29-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-53"><a href="#cb29-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## パラメータ設定</span></span>
+<span id="cb29-54"><a href="#cb29-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-55"><a href="#cb29-55" aria-hidden="true" tabindex="-1"></a>生きた植物の緑の部分や、リターの明るめの茶色を抽出するために、HSV色空間を利用して、色相（Hue）と彩度（Saturation）をしきい値で指定します。</span>
+<span id="cb29-56"><a href="#cb29-56" aria-hidden="true" tabindex="-1"></a>今回は、ここで手動で指定した値を使って解析を行いますが、実際の解析では、画像を見ながらインタラクティブに調整していました。</span>
+<span id="cb29-57"><a href="#cb29-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-58"><a href="#cb29-58" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb29-59"><a href="#cb29-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## HSV色空間</span></span>
+<span id="cb29-60"><a href="#cb29-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-61"><a href="#cb29-61" aria-hidden="true" tabindex="-1"></a>HSV色空間とは、色を表現する方法の一つで、色相（Hue）、彩度（Saturation）、明度（Value）という3つの要素で色を表現します。</span>
+<span id="cb29-62"><a href="#cb29-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-63"><a href="#cb29-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>色相（Hue）: 色の種類を表す要素で、0から179の値で円のように表されます (色相環)。赤が0、緑が60、青が120に対応します。</span>
+<span id="cb29-64"><a href="#cb29-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>彩度（Saturation）: 色の鮮やかさを表す要素で、0から255の値で表されます。0は無彩色（グレー）、255は最も鮮やかな色になります。</span>
+<span id="cb29-65"><a href="#cb29-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>明度（Value）: 色の明るさを表す要素で、0から255の値で表されます。0は完全な黒、255は完全な白になります。</span>
+<span id="cb29-66"><a href="#cb29-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-67"><a href="#cb29-67" aria-hidden="true" tabindex="-1"></a>詳細については、<span class="co">[</span><span class="ot">HSV色空間について</span><span class="co">](hsv_color_space.qmd)</span>をご覧ください。</span>
+<span id="cb29-68"><a href="#cb29-68" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-69"><a href="#cb29-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-72"><a href="#cb29-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-73"><a href="#cb29-73" aria-hidden="true" tabindex="-1"></a>IMAGE_PATH <span class="op">=</span> Path(<span class="st">"data/forest_cover_example.JPG"</span>)  <span class="co"># 解析する画像のパス</span></span>
+<span id="cb29-74"><a href="#cb29-74" aria-hidden="true" tabindex="-1"></a>WIDTH <span class="op">=</span> <span class="dv">1000</span>  <span class="co"># 出力画像の幅</span></span>
+<span id="cb29-75"><a href="#cb29-75" aria-hidden="true" tabindex="-1"></a>HEIGHT <span class="op">=</span> <span class="dv">1000</span>  <span class="co"># 出力画像の高さ</span></span>
+<span id="cb29-76"><a href="#cb29-76" aria-hidden="true" tabindex="-1"></a>OUTPUT_DIR <span class="op">=</span> Path(<span class="st">"output"</span>)  <span class="co"># 結果の出力先ディレクトリ</span></span>
+<span id="cb29-77"><a href="#cb29-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-78"><a href="#cb29-78" aria-hidden="true" tabindex="-1"></a><span class="co"># コドラートの四隅の座標</span></span>
+<span id="cb29-79"><a href="#cb29-79" aria-hidden="true" tabindex="-1"></a><span class="co"># 画像によって変わるので、必要に応じて更新してください</span></span>
+<span id="cb29-80"><a href="#cb29-80" aria-hidden="true" tabindex="-1"></a>PTS_SRC_MANUAL <span class="op">=</span> [</span>
+<span id="cb29-81"><a href="#cb29-81" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">970</span>, <span class="dv">230</span>),  <span class="co"># 左上</span></span>
+<span id="cb29-82"><a href="#cb29-82" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">3000</span>, <span class="dv">95</span>),  <span class="co"># 右上</span></span>
+<span id="cb29-83"><a href="#cb29-83" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">2950</span>, <span class="dv">2450</span>),  <span class="co"># 右下</span></span>
+<span id="cb29-84"><a href="#cb29-84" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">400</span>, <span class="dv">2280</span>),  <span class="co"># 左下</span></span>
+<span id="cb29-85"><a href="#cb29-85" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb29-86"><a href="#cb29-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-87"><a href="#cb29-87" aria-hidden="true" tabindex="-1"></a><span class="co"># 緑の領域を抽出するためのHSV範囲</span></span>
+<span id="cb29-88"><a href="#cb29-88" aria-hidden="true" tabindex="-1"></a><span class="co"># 画像によって変わるので、必要に応じて更新してください</span></span>
+<span id="cb29-89"><a href="#cb29-89" aria-hidden="true" tabindex="-1"></a>GREEN_HSV <span class="op">=</span> {</span>
+<span id="cb29-90"><a href="#cb29-90" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hmin"</span>: <span class="dv">35</span>,</span>
+<span id="cb29-91"><a href="#cb29-91" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hmax"</span>: <span class="dv">95</span>,</span>
+<span id="cb29-92"><a href="#cb29-92" aria-hidden="true" tabindex="-1"></a>    <span class="st">"smin"</span>: <span class="dv">0</span>,</span>
+<span id="cb29-93"><a href="#cb29-93" aria-hidden="true" tabindex="-1"></a>    <span class="st">"smax"</span>: <span class="dv">255</span>,</span>
+<span id="cb29-94"><a href="#cb29-94" aria-hidden="true" tabindex="-1"></a>    <span class="st">"vmin"</span>: <span class="dv">0</span>,</span>
+<span id="cb29-95"><a href="#cb29-95" aria-hidden="true" tabindex="-1"></a>    <span class="st">"vmax"</span>: <span class="dv">255</span>,</span>
+<span id="cb29-96"><a href="#cb29-96" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb29-97"><a href="#cb29-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-98"><a href="#cb29-98" aria-hidden="true" tabindex="-1"></a><span class="co"># リターの領域を抽出するためのHSV範囲</span></span>
+<span id="cb29-99"><a href="#cb29-99" aria-hidden="true" tabindex="-1"></a><span class="co"># 画像によって変わるので、必要に応じて更新してください</span></span>
+<span id="cb29-100"><a href="#cb29-100" aria-hidden="true" tabindex="-1"></a>LITTER_HSV <span class="op">=</span> {</span>
+<span id="cb29-101"><a href="#cb29-101" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hmin"</span>: <span class="dv">0</span>,</span>
+<span id="cb29-102"><a href="#cb29-102" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hmax"</span>: <span class="dv">179</span>,</span>
+<span id="cb29-103"><a href="#cb29-103" aria-hidden="true" tabindex="-1"></a>    <span class="st">"smin"</span>: <span class="dv">0</span>,</span>
+<span id="cb29-104"><a href="#cb29-104" aria-hidden="true" tabindex="-1"></a>    <span class="st">"smax"</span>: <span class="dv">255</span>,</span>
+<span id="cb29-105"><a href="#cb29-105" aria-hidden="true" tabindex="-1"></a>    <span class="st">"vmin"</span>: <span class="dv">0</span>,</span>
+<span id="cb29-106"><a href="#cb29-106" aria-hidden="true" tabindex="-1"></a>    <span class="st">"vmax"</span>: <span class="dv">150</span>,</span>
+<span id="cb29-107"><a href="#cb29-107" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb29-108"><a href="#cb29-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-109"><a href="#cb29-109" aria-hidden="true" tabindex="-1"></a><span class="co"># 出力設定</span></span>
+<span id="cb29-110"><a href="#cb29-110" aria-hidden="true" tabindex="-1"></a>OUTPUT_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-111"><a href="#cb29-111" aria-hidden="true" tabindex="-1"></a>(OUTPUT_DIR <span class="op">/</span> <span class="st">"figures"</span> <span class="op">/</span> <span class="st">"quadrat_warped"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-112"><a href="#cb29-112" aria-hidden="true" tabindex="-1"></a>(OUTPUT_DIR <span class="op">/</span> <span class="st">"figures"</span> <span class="op">/</span> <span class="st">"quadrat_segmented"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-113"><a href="#cb29-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-114"><a href="#cb29-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-115"><a href="#cb29-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## 補助関数</span></span>
+<span id="cb29-116"><a href="#cb29-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-117"><a href="#cb29-117" aria-hidden="true" tabindex="-1"></a><span class="fu">### 4点の順序を整える</span></span>
+<span id="cb29-118"><a href="#cb29-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-119"><a href="#cb29-119" aria-hidden="true" tabindex="-1"></a>四隅の座標の順序は、射影変換の関数に渡す前に、**左上 → 右上 → 右下 → 左下** の順になるように整える必要があります。</span>
+<span id="cb29-120"><a href="#cb29-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-123"><a href="#cb29-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-124"><a href="#cb29-124" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> order_points_by_angle(pts):</span>
+<span id="cb29-125"><a href="#cb29-125" aria-hidden="true" tabindex="-1"></a>    pts <span class="op">=</span> np.array(pts, dtype<span class="op">=</span><span class="st">"float32"</span>)</span>
+<span id="cb29-126"><a href="#cb29-126" aria-hidden="true" tabindex="-1"></a>    center <span class="op">=</span> np.mean(pts, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb29-127"><a href="#cb29-127" aria-hidden="true" tabindex="-1"></a>    angles <span class="op">=</span> np.arctan2(pts[:, <span class="dv">1</span>] <span class="op">-</span> center[<span class="dv">1</span>], pts[:, <span class="dv">0</span>] <span class="op">-</span> center[<span class="dv">0</span>])</span>
+<span id="cb29-128"><a href="#cb29-128" aria-hidden="true" tabindex="-1"></a>    ordered <span class="op">=</span> pts[np.argsort(angles)]</span>
+<span id="cb29-129"><a href="#cb29-129" aria-hidden="true" tabindex="-1"></a>    idx_topleft <span class="op">=</span> np.argmin(np.<span class="bu">sum</span>(ordered, axis<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb29-130"><a href="#cb29-130" aria-hidden="true" tabindex="-1"></a>    ordered <span class="op">=</span> np.roll(ordered, <span class="op">-</span>idx_topleft, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb29-131"><a href="#cb29-131" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ordered</span>
+<span id="cb29-132"><a href="#cb29-132" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-133"><a href="#cb29-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-134"><a href="#cb29-134" aria-hidden="true" tabindex="-1"></a><span class="fu">### 射影変換</span></span>
+<span id="cb29-135"><a href="#cb29-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-136"><a href="#cb29-136" aria-hidden="true" tabindex="-1"></a>射影変換とは、画像の中の特定の4点を、別の4点に対応させる変換のことです。</span>
+<span id="cb29-137"><a href="#cb29-137" aria-hidden="true" tabindex="-1"></a>今回は、区画の四隅を、幅1000×高さ1000の正方形の四隅に対応させることで、**区画を真上から見たような画像に補正**します。</span>
+<span id="cb29-138"><a href="#cb29-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-141"><a href="#cb29-141" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-142"><a href="#cb29-142" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> warp_quadrat(image_bgr, pts_src, width<span class="op">=</span><span class="dv">1000</span>, height<span class="op">=</span><span class="dv">1000</span>):</span>
+<span id="cb29-143"><a href="#cb29-143" aria-hidden="true" tabindex="-1"></a>    pts_dst <span class="op">=</span> np.array([</span>
+<span id="cb29-144"><a href="#cb29-144" aria-hidden="true" tabindex="-1"></a>        [<span class="dv">0</span>, <span class="dv">0</span>],</span>
+<span id="cb29-145"><a href="#cb29-145" aria-hidden="true" tabindex="-1"></a>        [width <span class="op">-</span> <span class="dv">1</span>, <span class="dv">0</span>],</span>
+<span id="cb29-146"><a href="#cb29-146" aria-hidden="true" tabindex="-1"></a>        [width <span class="op">-</span> <span class="dv">1</span>, height <span class="op">-</span> <span class="dv">1</span>],</span>
+<span id="cb29-147"><a href="#cb29-147" aria-hidden="true" tabindex="-1"></a>        [<span class="dv">0</span>, height <span class="op">-</span> <span class="dv">1</span>],</span>
+<span id="cb29-148"><a href="#cb29-148" aria-hidden="true" tabindex="-1"></a>    ], dtype<span class="op">=</span><span class="st">"float32"</span>)</span>
+<span id="cb29-149"><a href="#cb29-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-150"><a href="#cb29-150" aria-hidden="true" tabindex="-1"></a>    M <span class="op">=</span> cv2.getPerspectiveTransform(pts_src, pts_dst)</span>
+<span id="cb29-151"><a href="#cb29-151" aria-hidden="true" tabindex="-1"></a>    warped <span class="op">=</span> cv2.warpPerspective(image_bgr, M, (width, height))</span>
+<span id="cb29-152"><a href="#cb29-152" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> warped, M</span>
+<span id="cb29-153"><a href="#cb29-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-154"><a href="#cb29-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-155"><a href="#cb29-155" aria-hidden="true" tabindex="-1"></a><span class="fu">### HSV 範囲でマスクを作成</span></span>
+<span id="cb29-156"><a href="#cb29-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-159"><a href="#cb29-159" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-160"><a href="#cb29-160" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_hsv_mask(hsv_image, hsv_params):</span>
+<span id="cb29-161"><a href="#cb29-161" aria-hidden="true" tabindex="-1"></a>    lower <span class="op">=</span> np.array([hsv_params[<span class="st">"hmin"</span>], hsv_params[<span class="st">"smin"</span>], hsv_params[<span class="st">"vmin"</span>]])</span>
+<span id="cb29-162"><a href="#cb29-162" aria-hidden="true" tabindex="-1"></a>    upper <span class="op">=</span> np.array([hsv_params[<span class="st">"hmax"</span>], hsv_params[<span class="st">"smax"</span>], hsv_params[<span class="st">"vmax"</span>]])</span>
+<span id="cb29-163"><a href="#cb29-163" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> cv2.inRange(hsv_image, lower, upper)</span>
+<span id="cb29-164"><a href="#cb29-164" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-165"><a href="#cb29-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-166"><a href="#cb29-166" aria-hidden="true" tabindex="-1"></a><span class="fu">### 結果保存</span></span>
+<span id="cb29-167"><a href="#cb29-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-170"><a href="#cb29-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-171"><a href="#cb29-171" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_results(</span>
+<span id="cb29-172"><a href="#cb29-172" aria-hidden="true" tabindex="-1"></a>    image_path,</span>
+<span id="cb29-173"><a href="#cb29-173" aria-hidden="true" tabindex="-1"></a>    output_dir,</span>
+<span id="cb29-174"><a href="#cb29-174" aria-hidden="true" tabindex="-1"></a>    warped,</span>
+<span id="cb29-175"><a href="#cb29-175" aria-hidden="true" tabindex="-1"></a>    segmented,</span>
+<span id="cb29-176"><a href="#cb29-176" aria-hidden="true" tabindex="-1"></a>    green_ratio,</span>
+<span id="cb29-177"><a href="#cb29-177" aria-hidden="true" tabindex="-1"></a>    litter_ratio,</span>
+<span id="cb29-178"><a href="#cb29-178" aria-hidden="true" tabindex="-1"></a>    soil_ratio,</span>
+<span id="cb29-179"><a href="#cb29-179" aria-hidden="true" tabindex="-1"></a>    green_params,</span>
+<span id="cb29-180"><a href="#cb29-180" aria-hidden="true" tabindex="-1"></a>    litter_params,</span>
+<span id="cb29-181"><a href="#cb29-181" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb29-182"><a href="#cb29-182" aria-hidden="true" tabindex="-1"></a>    image_path <span class="op">=</span> Path(image_path)</span>
+<span id="cb29-183"><a href="#cb29-183" aria-hidden="true" tabindex="-1"></a>    basename_with_ext <span class="op">=</span> image_path.name</span>
+<span id="cb29-184"><a href="#cb29-184" aria-hidden="true" tabindex="-1"></a>    basename <span class="op">=</span> image_path.stem</span>
+<span id="cb29-185"><a href="#cb29-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-186"><a href="#cb29-186" aria-hidden="true" tabindex="-1"></a>    time_str <span class="op">=</span> datetime.now().strftime(<span class="st">"%Y/%m/</span><span class="sc">%d</span><span class="st"> %H:%M:%S"</span>)</span>
+<span id="cb29-187"><a href="#cb29-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-188"><a href="#cb29-188" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb29-189"><a href="#cb29-189" aria-hidden="true" tabindex="-1"></a>        <span class="st">"file_path"</span>: [<span class="bu">str</span>(image_path)],</span>
+<span id="cb29-190"><a href="#cb29-190" aria-hidden="true" tabindex="-1"></a>        <span class="st">"file_name"</span>: [basename_with_ext],</span>
+<span id="cb29-191"><a href="#cb29-191" aria-hidden="true" tabindex="-1"></a>        <span class="st">"time"</span>: [time_str],</span>
+<span id="cb29-192"><a href="#cb29-192" aria-hidden="true" tabindex="-1"></a>        <span class="st">"green_ratio"</span>: [green_ratio],</span>
+<span id="cb29-193"><a href="#cb29-193" aria-hidden="true" tabindex="-1"></a>        <span class="st">"litter_ratio"</span>: [litter_ratio],</span>
+<span id="cb29-194"><a href="#cb29-194" aria-hidden="true" tabindex="-1"></a>        <span class="st">"soil_ratio"</span>: [soil_ratio],</span>
+<span id="cb29-195"><a href="#cb29-195" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hmin_green"</span>: [green_params[<span class="st">"hmin"</span>]],</span>
+<span id="cb29-196"><a href="#cb29-196" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hmax_green"</span>: [green_params[<span class="st">"hmax"</span>]],</span>
+<span id="cb29-197"><a href="#cb29-197" aria-hidden="true" tabindex="-1"></a>        <span class="st">"smin_green"</span>: [green_params[<span class="st">"smin"</span>]],</span>
+<span id="cb29-198"><a href="#cb29-198" aria-hidden="true" tabindex="-1"></a>        <span class="st">"smax_green"</span>: [green_params[<span class="st">"smax"</span>]],</span>
+<span id="cb29-199"><a href="#cb29-199" aria-hidden="true" tabindex="-1"></a>        <span class="st">"vmin_green"</span>: [green_params[<span class="st">"vmin"</span>]],</span>
+<span id="cb29-200"><a href="#cb29-200" aria-hidden="true" tabindex="-1"></a>        <span class="st">"vmax_green"</span>: [green_params[<span class="st">"vmax"</span>]],</span>
+<span id="cb29-201"><a href="#cb29-201" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hmin_litter"</span>: [litter_params[<span class="st">"hmin"</span>]],</span>
+<span id="cb29-202"><a href="#cb29-202" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hmax_litter"</span>: [litter_params[<span class="st">"hmax"</span>]],</span>
+<span id="cb29-203"><a href="#cb29-203" aria-hidden="true" tabindex="-1"></a>        <span class="st">"smin_litter"</span>: [litter_params[<span class="st">"smin"</span>]],</span>
+<span id="cb29-204"><a href="#cb29-204" aria-hidden="true" tabindex="-1"></a>        <span class="st">"smax_litter"</span>: [litter_params[<span class="st">"smax"</span>]],</span>
+<span id="cb29-205"><a href="#cb29-205" aria-hidden="true" tabindex="-1"></a>        <span class="st">"vmin_litter"</span>: [litter_params[<span class="st">"vmin"</span>]],</span>
+<span id="cb29-206"><a href="#cb29-206" aria-hidden="true" tabindex="-1"></a>        <span class="st">"vmax_litter"</span>: [litter_params[<span class="st">"vmax"</span>]],</span>
+<span id="cb29-207"><a href="#cb29-207" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb29-208"><a href="#cb29-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-209"><a href="#cb29-209" aria-hidden="true" tabindex="-1"></a>    csv_path <span class="op">=</span> output_dir <span class="op">/</span> <span class="st">"classify_quadrat_regions.csv"</span></span>
+<span id="cb29-210"><a href="#cb29-210" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> csv_path.exists():</span>
+<span id="cb29-211"><a href="#cb29-211" aria-hidden="true" tabindex="-1"></a>        existing_data <span class="op">=</span> pd.read_csv(csv_path)</span>
+<span id="cb29-212"><a href="#cb29-212" aria-hidden="true" tabindex="-1"></a>        combined <span class="op">=</span> pd.concat([existing_data, df], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-213"><a href="#cb29-213" aria-hidden="true" tabindex="-1"></a>        combined <span class="op">=</span> combined.drop_duplicates(subset<span class="op">=</span><span class="st">"file_name"</span>, keep<span class="op">=</span><span class="st">"last"</span>)</span>
+<span id="cb29-214"><a href="#cb29-214" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb29-215"><a href="#cb29-215" aria-hidden="true" tabindex="-1"></a>        combined <span class="op">=</span> df</span>
+<span id="cb29-216"><a href="#cb29-216" aria-hidden="true" tabindex="-1"></a>    combined.to_csv(csv_path, index<span class="op">=</span><span class="va">False</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb29-217"><a href="#cb29-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-218"><a href="#cb29-218" aria-hidden="true" tabindex="-1"></a>    warped_path <span class="op">=</span> output_dir <span class="op">/</span> <span class="st">"figures"</span> <span class="op">/</span> <span class="st">"quadrat_warped"</span> <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>basename<span class="sc">}</span><span class="ss">.jpg"</span></span>
+<span id="cb29-219"><a href="#cb29-219" aria-hidden="true" tabindex="-1"></a>    segmented_path <span class="op">=</span> output_dir <span class="op">/</span> <span class="st">"figures"</span> <span class="op">/</span> <span class="st">"quadrat_segmented"</span> <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>basename<span class="sc">}</span><span class="ss">.jpg"</span></span>
+<span id="cb29-220"><a href="#cb29-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-221"><a href="#cb29-221" aria-hidden="true" tabindex="-1"></a>    cv2.imwrite(<span class="bu">str</span>(warped_path), warped)</span>
+<span id="cb29-222"><a href="#cb29-222" aria-hidden="true" tabindex="-1"></a>    cv2.imwrite(<span class="bu">str</span>(segmented_path), segmented)</span>
+<span id="cb29-223"><a href="#cb29-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-224"><a href="#cb29-224" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> csv_path, warped_path, segmented_path</span>
+<span id="cb29-225"><a href="#cb29-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-226"><a href="#cb29-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-227"><a href="#cb29-227" aria-hidden="true" tabindex="-1"></a><span class="fu">## 解析</span></span>
+<span id="cb29-228"><a href="#cb29-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-229"><a href="#cb29-229" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1. 画像の読み込み</span></span>
+<span id="cb29-230"><a href="#cb29-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-231"><a href="#cb29-231" aria-hidden="true" tabindex="-1"></a>ここから実際の解析の手順を説明します。</span>
+<span id="cb29-232"><a href="#cb29-232" aria-hidden="true" tabindex="-1"></a>まずは、解析する画像を読み込みます。</span>
+<span id="cb29-233"><a href="#cb29-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-236"><a href="#cb29-236" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-237"><a href="#cb29-237" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> IMAGE_PATH.exists():</span>
+<span id="cb29-238"><a href="#cb29-238" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">FileNotFoundError</span>(<span class="ss">f"画像が見つかりません: </span><span class="sc">{</span>IMAGE_PATH<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb29-239"><a href="#cb29-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-240"><a href="#cb29-240" aria-hidden="true" tabindex="-1"></a>image_bgr <span class="op">=</span> cv2.imread(<span class="bu">str</span>(IMAGE_PATH))</span>
+<span id="cb29-241"><a href="#cb29-241" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> image_bgr <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb29-242"><a href="#cb29-242" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="st">"画像の読み込みに失敗しました。"</span>)</span>
+<span id="cb29-243"><a href="#cb29-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-244"><a href="#cb29-244" aria-hidden="true" tabindex="-1"></a>image_rgb <span class="op">=</span> cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)</span>
+<span id="cb29-245"><a href="#cb29-245" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"画像ファイルのパス:"</span>, IMAGE_PATH)</span>
+<span id="cb29-246"><a href="#cb29-246" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"画像のサイズ:"</span>, image_bgr.shape)</span>
+<span id="cb29-247"><a href="#cb29-247" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-248"><a href="#cb29-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-249"><a href="#cb29-249" aria-hidden="true" tabindex="-1"></a>読み込んだ画像を確認します。</span>
+<span id="cb29-250"><a href="#cb29-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-253"><a href="#cb29-253" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-254"><a href="#cb29-254" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "読み込んだ画像"</span></span>
+<span id="cb29-255"><a href="#cb29-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-256"><a href="#cb29-256" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb29-257"><a href="#cb29-257" aria-hidden="true" tabindex="-1"></a>ax.imshow(image_rgb)</span>
+<span id="cb29-258"><a href="#cb29-258" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb29-259"><a href="#cb29-259" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-260"><a href="#cb29-260" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-261"><a href="#cb29-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-262"><a href="#cb29-262" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2. コドラートの四隅を指定する</span></span>
+<span id="cb29-263"><a href="#cb29-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-264"><a href="#cb29-264" aria-hidden="true" tabindex="-1"></a>コドラートの四隅を指定します。</span>
+<span id="cb29-265"><a href="#cb29-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-268"><a href="#cb29-268" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-269"><a href="#cb29-269" aria-hidden="true" tabindex="-1"></a>pts_src <span class="op">=</span> order_points_by_angle(PTS_SRC_MANUAL)</span>
+<span id="cb29-270"><a href="#cb29-270" aria-hidden="true" tabindex="-1"></a>pts_src</span>
+<span id="cb29-271"><a href="#cb29-271" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-272"><a href="#cb29-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-273"><a href="#cb29-273" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb29-274"><a href="#cb29-274" aria-hidden="true" tabindex="-1"></a><span class="fu">## 画像処理における座標系</span></span>
+<span id="cb29-275"><a href="#cb29-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-276"><a href="#cb29-276" aria-hidden="true" tabindex="-1"></a>画像処理においては、基本的に左上が原点(0, 0)で、右に行くほどx座標が大きくなり、下に行くほどy座標が大きくなる座標系が使われます。</span>
+<span id="cb29-277"><a href="#cb29-277" aria-hidden="true" tabindex="-1"></a>数学の教科書などで使われる、原点は中心で、右に行くほどx座標が大きくなり、上に行くほどy座標が大きくなる座標系とは逆になることに注意してください。</span>
+<span id="cb29-278"><a href="#cb29-278" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-279"><a href="#cb29-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-280"><a href="#cb29-280" aria-hidden="true" tabindex="-1"></a>画像に指定した4点をプロットして、正しい位置に指定できているか確認します。</span>
+<span id="cb29-281"><a href="#cb29-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-284"><a href="#cb29-284" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-285"><a href="#cb29-285" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "指定したコドラートの四隅の位置を確認する"</span></span>
+<span id="cb29-286"><a href="#cb29-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-287"><a href="#cb29-287" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb29-288"><a href="#cb29-288" aria-hidden="true" tabindex="-1"></a>ax.imshow(image_rgb)</span>
+<span id="cb29-289"><a href="#cb29-289" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (x, y) <span class="kw">in</span> <span class="bu">enumerate</span>(pts_src):</span>
+<span id="cb29-290"><a href="#cb29-290" aria-hidden="true" tabindex="-1"></a>    ax.scatter(x, y, c<span class="op">=</span><span class="st">"red"</span>, s<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb29-291"><a href="#cb29-291" aria-hidden="true" tabindex="-1"></a>    ax.text(x <span class="op">+</span> <span class="dv">10</span>, y <span class="op">+</span> <span class="dv">10</span>, <span class="ss">f"P</span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>, color<span class="op">=</span><span class="st">"yellow"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb29-292"><a href="#cb29-292" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Selected quadrat corners"</span>)</span>
+<span id="cb29-293"><a href="#cb29-293" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb29-294"><a href="#cb29-294" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-295"><a href="#cb29-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-296"><a href="#cb29-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-297"><a href="#cb29-297" aria-hidden="true" tabindex="-1"></a><span class="fu"># 3. 射影変換で正方形に補正する</span></span>
+<span id="cb29-298"><a href="#cb29-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-299"><a href="#cb29-299" aria-hidden="true" tabindex="-1"></a><span class="in">`src_pts`</span>で指定した4点を、幅1000×高さ1000の正方形の四隅に対応させる射影変換を行います。</span>
+<span id="cb29-300"><a href="#cb29-300" aria-hidden="true" tabindex="-1"></a>これにより、区画を真上から見たような画像に補正し、解析しやすくします。</span>
+<span id="cb29-301"><a href="#cb29-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-302"><a href="#cb29-302" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb29-303"><a href="#cb29-303" aria-hidden="true" tabindex="-1"></a><span class="fu">## 射影変換</span></span>
+<span id="cb29-304"><a href="#cb29-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-305"><a href="#cb29-305" aria-hidden="true" tabindex="-1"></a>射影変換 (perspective transformation) とは、画像の中の特定の4点を、別の4点に対応させる変換のことです。</span>
+<span id="cb29-306"><a href="#cb29-306" aria-hidden="true" tabindex="-1"></a>この変換には、画像の拡大・縮小、回転、平行移動に加えて、遠近法による歪みも補正することができます。</span>
+<span id="cb29-307"><a href="#cb29-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-308"><a href="#cb29-308" aria-hidden="true" tabindex="-1"></a>これにより、任意の四角形を別の四角形に移すことができるため、斜めから撮影した画像を、真上から見たような画像に補正することができます。</span>
+<span id="cb29-309"><a href="#cb29-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-310"><a href="#cb29-310" aria-hidden="true" tabindex="-1"></a>詳細については、<span class="co">[</span><span class="ot">射影変換について</span><span class="co">](projective_transformation.qmd)</span>をご覧ください。</span>
+<span id="cb29-311"><a href="#cb29-311" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-312"><a href="#cb29-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-315"><a href="#cb29-315" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-316"><a href="#cb29-316" aria-hidden="true" tabindex="-1"></a>warped_bgr, transform_matrix <span class="op">=</span> warp_quadrat(</span>
+<span id="cb29-317"><a href="#cb29-317" aria-hidden="true" tabindex="-1"></a>    image_bgr<span class="op">=</span>image_bgr,</span>
+<span id="cb29-318"><a href="#cb29-318" aria-hidden="true" tabindex="-1"></a>    pts_src<span class="op">=</span>pts_src,</span>
+<span id="cb29-319"><a href="#cb29-319" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span>WIDTH,</span>
+<span id="cb29-320"><a href="#cb29-320" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span>HEIGHT,</span>
+<span id="cb29-321"><a href="#cb29-321" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-322"><a href="#cb29-322" aria-hidden="true" tabindex="-1"></a>warped_rgb <span class="op">=</span> cv2.cvtColor(warped_bgr, cv2.COLOR_BGR2RGB)</span>
+<span id="cb29-323"><a href="#cb29-323" aria-hidden="true" tabindex="-1"></a>transform_matrix</span>
+<span id="cb29-324"><a href="#cb29-324" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-325"><a href="#cb29-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-328"><a href="#cb29-328" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-329"><a href="#cb29-329" aria-hidden="true" tabindex="-1"></a><span class="co"># | fig-cap: "射影変換した画像(真上から見たような画像)"</span></span>
+<span id="cb29-330"><a href="#cb29-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-331"><a href="#cb29-331" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb29-332"><a href="#cb29-332" aria-hidden="true" tabindex="-1"></a>ax.imshow(warped_rgb)</span>
+<span id="cb29-333"><a href="#cb29-333" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb29-334"><a href="#cb29-334" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-335"><a href="#cb29-335" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-336"><a href="#cb29-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-337"><a href="#cb29-337" aria-hidden="true" tabindex="-1"></a><span class="fu"># 4. 緑領域を抽出する</span></span>
+<span id="cb29-338"><a href="#cb29-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-339"><a href="#cb29-339" aria-hidden="true" tabindex="-1"></a>生きた植物がどのくらいコドラートを被覆しているかを推定するために、緑の領域を抽出します。</span>
+<span id="cb29-340"><a href="#cb29-340" aria-hidden="true" tabindex="-1"></a>今回は、HSV色空間で指定した範囲を使って、緑の領域を抽出します。</span>
+<span id="cb29-341"><a href="#cb29-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-342"><a href="#cb29-342" aria-hidden="true" tabindex="-1"></a>しかし、植物によって葉の色が異なったり、光の当たり方によって同じ葉でも色が変わったりするため、緑の領域を完全に抽出することは難しいことが多いです。</span>
+<span id="cb29-343"><a href="#cb29-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-346"><a href="#cb29-346" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-347"><a href="#cb29-347" aria-hidden="true" tabindex="-1"></a>hsv <span class="op">=</span> cv2.cvtColor(warped_bgr, cv2.COLOR_BGR2HSV)</span>
+<span id="cb29-348"><a href="#cb29-348" aria-hidden="true" tabindex="-1"></a>mask_green <span class="op">=</span> make_hsv_mask(hsv, GREEN_HSV)</span>
+<span id="cb29-349"><a href="#cb29-349" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-350"><a href="#cb29-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-353"><a href="#cb29-353" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-354"><a href="#cb29-354" aria-hidden="true" tabindex="-1"></a><span class="co"># | fig-cap: "緑の領域を抽出したマスク画像"</span></span>
+<span id="cb29-355"><a href="#cb29-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-356"><a href="#cb29-356" aria-hidden="true" tabindex="-1"></a>green_overlay <span class="op">=</span> warped_rgb.copy()</span>
+<span id="cb29-357"><a href="#cb29-357" aria-hidden="true" tabindex="-1"></a>green_overlay[mask_green <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> [<span class="dv">180</span>, <span class="dv">180</span>, <span class="dv">0</span>]</span>
+<span id="cb29-358"><a href="#cb29-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-359"><a href="#cb29-359" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb29-360"><a href="#cb29-360" aria-hidden="true" tabindex="-1"></a>plt.imshow(green_overlay)</span>
+<span id="cb29-361"><a href="#cb29-361" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Green region overlay"</span>)</span>
+<span id="cb29-362"><a href="#cb29-362" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb29-363"><a href="#cb29-363" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-364"><a href="#cb29-364" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-365"><a href="#cb29-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-366"><a href="#cb29-366" aria-hidden="true" tabindex="-1"></a>緑の領域が全体の何割を占めているか計算します。</span>
+<span id="cb29-367"><a href="#cb29-367" aria-hidden="true" tabindex="-1"></a>これが**被度の推定値**になります。</span>
+<span id="cb29-368"><a href="#cb29-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-371"><a href="#cb29-371" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-372"><a href="#cb29-372" aria-hidden="true" tabindex="-1"></a>total_pixels <span class="op">=</span> mask_green.shape[<span class="dv">0</span>] <span class="op">*</span> mask_green.shape[<span class="dv">1</span>]</span>
+<span id="cb29-373"><a href="#cb29-373" aria-hidden="true" tabindex="-1"></a>green_pixels <span class="op">=</span> cv2.countNonZero(mask_green)</span>
+<span id="cb29-374"><a href="#cb29-374" aria-hidden="true" tabindex="-1"></a>green_ratio <span class="op">=</span> green_pixels <span class="op">/</span> total_pixels</span>
+<span id="cb29-375"><a href="#cb29-375" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"green_ratio = </span><span class="sc">{</span>green_ratio<span class="sc">:.4f}</span><span class="ss"> (</span><span class="sc">{</span>green_ratio <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb29-376"><a href="#cb29-376" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-377"><a href="#cb29-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-378"><a href="#cb29-378" aria-hidden="true" tabindex="-1"></a><span class="fu"># 5. 緑以外からリターを抽出する</span></span>
+<span id="cb29-379"><a href="#cb29-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-380"><a href="#cb29-380" aria-hidden="true" tabindex="-1"></a>植物被覆以外の領域は、リター（落葉・落枝）と地面に分けて考えることができます。</span>
+<span id="cb29-381"><a href="#cb29-381" aria-hidden="true" tabindex="-1"></a>リターは、明るめの茶色の領域として抽出できることが多いです。</span>
+<span id="cb29-382"><a href="#cb29-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-383"><a href="#cb29-383" aria-hidden="true" tabindex="-1"></a>ここでは、緑の領域を除いた領域から、リターを抽出します。</span>
+<span id="cb29-384"><a href="#cb29-384" aria-hidden="true" tabindex="-1"></a>これで、緑の領域、リターの領域、地面の領域の3つに分類することができます。</span>
+<span id="cb29-385"><a href="#cb29-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-388"><a href="#cb29-388" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-389"><a href="#cb29-389" aria-hidden="true" tabindex="-1"></a>mask_not_green <span class="op">=</span> cv2.bitwise_not(mask_green)</span>
+<span id="cb29-390"><a href="#cb29-390" aria-hidden="true" tabindex="-1"></a>mask_litter_raw <span class="op">=</span> make_hsv_mask(hsv, LITTER_HSV)</span>
+<span id="cb29-391"><a href="#cb29-391" aria-hidden="true" tabindex="-1"></a>mask_litter <span class="op">=</span> cv2.bitwise_and(mask_litter_raw, mask_not_green)</span>
+<span id="cb29-392"><a href="#cb29-392" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-393"><a href="#cb29-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-394"><a href="#cb29-394" aria-hidden="true" tabindex="-1"></a><span class="fu"># 6. 地面を残差として定義する</span></span>
+<span id="cb29-395"><a href="#cb29-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-396"><a href="#cb29-396" aria-hidden="true" tabindex="-1"></a>植物の緑の領域とリターの領域を抽出した後、残りの領域を地面として定義します。</span>
+<span id="cb29-397"><a href="#cb29-397" aria-hidden="true" tabindex="-1"></a>実際にはリターと地面の境界は曖昧なことが多いですが、ここでは単純に緑とリター以外を地面とします。</span>
+<span id="cb29-398"><a href="#cb29-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-401"><a href="#cb29-401" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-402"><a href="#cb29-402" aria-hidden="true" tabindex="-1"></a>mask_soil <span class="op">=</span> cv2.bitwise_and(mask_not_green, cv2.bitwise_not(mask_litter))</span>
+<span id="cb29-403"><a href="#cb29-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-404"><a href="#cb29-404" aria-hidden="true" tabindex="-1"></a>litter_pixels <span class="op">=</span> cv2.countNonZero(mask_litter)</span>
+<span id="cb29-405"><a href="#cb29-405" aria-hidden="true" tabindex="-1"></a>soil_pixels <span class="op">=</span> cv2.countNonZero(mask_soil)</span>
+<span id="cb29-406"><a href="#cb29-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-407"><a href="#cb29-407" aria-hidden="true" tabindex="-1"></a>litter_ratio <span class="op">=</span> litter_pixels <span class="op">/</span> total_pixels</span>
+<span id="cb29-408"><a href="#cb29-408" aria-hidden="true" tabindex="-1"></a>soil_ratio <span class="op">=</span> soil_pixels <span class="op">/</span> total_pixels</span>
+<span id="cb29-409"><a href="#cb29-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-410"><a href="#cb29-410" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"green_ratio  = </span><span class="sc">{</span>green_ratio<span class="sc">:.4f}</span><span class="ss"> (</span><span class="sc">{</span>green_ratio <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb29-411"><a href="#cb29-411" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"litter_ratio = </span><span class="sc">{</span>litter_ratio<span class="sc">:.4f}</span><span class="ss"> (</span><span class="sc">{</span>litter_ratio <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb29-412"><a href="#cb29-412" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"soil_ratio   = </span><span class="sc">{</span>soil_ratio<span class="sc">:.4f}</span><span class="ss"> (</span><span class="sc">{</span>soil_ratio <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb29-413"><a href="#cb29-413" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"sum          = </span><span class="sc">{</span>(green_ratio <span class="op">+</span> litter_ratio <span class="op">+</span> soil_ratio)<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb29-414"><a href="#cb29-414" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-415"><a href="#cb29-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-416"><a href="#cb29-416" aria-hidden="true" tabindex="-1"></a><span class="fu"># 7. 最終分類画像を作る</span></span>
+<span id="cb29-417"><a href="#cb29-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-418"><a href="#cb29-418" aria-hidden="true" tabindex="-1"></a>植物被覆、リター、地面の領域を色分けして、最終的な分類画像を作ります。</span>
+<span id="cb29-419"><a href="#cb29-419" aria-hidden="true" tabindex="-1"></a>植物被覆を緑、リターをオレンジ、地面を紫で表示します。</span>
+<span id="cb29-420"><a href="#cb29-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-423"><a href="#cb29-423" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-424"><a href="#cb29-424" aria-hidden="true" tabindex="-1"></a>segmented_bgr <span class="op">=</span> warped_bgr.copy()</span>
+<span id="cb29-425"><a href="#cb29-425" aria-hidden="true" tabindex="-1"></a>segmented_bgr[mask_green <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> (<span class="dv">115</span>, <span class="dv">158</span>, <span class="dv">0</span>)</span>
+<span id="cb29-426"><a href="#cb29-426" aria-hidden="true" tabindex="-1"></a>segmented_bgr[mask_litter <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">159</span>, <span class="dv">230</span>)</span>
+<span id="cb29-427"><a href="#cb29-427" aria-hidden="true" tabindex="-1"></a>segmented_bgr[mask_soil <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> (<span class="dv">167</span>, <span class="dv">121</span>, <span class="dv">204</span>)</span>
+<span id="cb29-428"><a href="#cb29-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-429"><a href="#cb29-429" aria-hidden="true" tabindex="-1"></a>segmented_rgb <span class="op">=</span> cv2.cvtColor(segmented_bgr, cv2.COLOR_BGR2RGB)</span>
+<span id="cb29-430"><a href="#cb29-430" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-431"><a href="#cb29-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-434"><a href="#cb29-434" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-435"><a href="#cb29-435" aria-hidden="true" tabindex="-1"></a><span class="co"># | fig-cap: "分類結果の画像"</span></span>
+<span id="cb29-436"><a href="#cb29-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-437"><a href="#cb29-437" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb29-438"><a href="#cb29-438" aria-hidden="true" tabindex="-1"></a>ax.imshow(segmented_rgb)</span>
+<span id="cb29-439"><a href="#cb29-439" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb29-440"><a href="#cb29-440" aria-hidden="true" tabindex="-1"></a>legend_handles <span class="op">=</span> [</span>
+<span id="cb29-441"><a href="#cb29-441" aria-hidden="true" tabindex="-1"></a>    mpatches.Patch(color<span class="op">=</span>(<span class="dv">0</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">158</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">115</span> <span class="op">/</span> <span class="dv">255</span>), label<span class="op">=</span><span class="st">"Green"</span>),</span>
+<span id="cb29-442"><a href="#cb29-442" aria-hidden="true" tabindex="-1"></a>    mpatches.Patch(color<span class="op">=</span>(<span class="dv">230</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">159</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">0</span> <span class="op">/</span> <span class="dv">255</span>), label<span class="op">=</span><span class="st">"Litter"</span>),</span>
+<span id="cb29-443"><a href="#cb29-443" aria-hidden="true" tabindex="-1"></a>    mpatches.Patch(color<span class="op">=</span>(<span class="dv">204</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">121</span> <span class="op">/</span> <span class="dv">255</span>, <span class="dv">167</span> <span class="op">/</span> <span class="dv">255</span>), label<span class="op">=</span><span class="st">"Soil"</span>),</span>
+<span id="cb29-444"><a href="#cb29-444" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb29-445"><a href="#cb29-445" aria-hidden="true" tabindex="-1"></a>plt.legend(handles<span class="op">=</span>legend_handles, loc<span class="op">=</span><span class="st">"upper right"</span>, frameon<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-446"><a href="#cb29-446" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-447"><a href="#cb29-447" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-448"><a href="#cb29-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-449"><a href="#cb29-449" aria-hidden="true" tabindex="-1"></a>もとの画像と並べて表示します。</span>
+<span id="cb29-450"><a href="#cb29-450" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-453"><a href="#cb29-453" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-454"><a href="#cb29-454" aria-hidden="true" tabindex="-1"></a><span class="co"># | layout-ncol: 2</span></span>
+<span id="cb29-455"><a href="#cb29-455" aria-hidden="true" tabindex="-1"></a><span class="co"># | fig-cap:</span></span>
+<span id="cb29-456"><a href="#cb29-456" aria-hidden="true" tabindex="-1"></a><span class="co"># |   - "射影変換した画像"</span></span>
+<span id="cb29-457"><a href="#cb29-457" aria-hidden="true" tabindex="-1"></a><span class="co"># |   - "分類結果の画像"</span></span>
+<span id="cb29-458"><a href="#cb29-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-459"><a href="#cb29-459" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots()</span>
+<span id="cb29-460"><a href="#cb29-460" aria-hidden="true" tabindex="-1"></a>axes.imshow(warped_rgb)</span>
+<span id="cb29-461"><a href="#cb29-461" aria-hidden="true" tabindex="-1"></a>axes.axis(<span class="st">"off"</span>)</span>
+<span id="cb29-462"><a href="#cb29-462" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-463"><a href="#cb29-463" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots()</span>
+<span id="cb29-464"><a href="#cb29-464" aria-hidden="true" tabindex="-1"></a>axes.imshow(segmented_rgb)</span>
+<span id="cb29-465"><a href="#cb29-465" aria-hidden="true" tabindex="-1"></a>axes.axis(<span class="st">"off"</span>)</span>
+<span id="cb29-466"><a href="#cb29-466" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-467"><a href="#cb29-467" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-468"><a href="#cb29-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-469"><a href="#cb29-469" aria-hidden="true" tabindex="-1"></a><span class="fu"># 8. 結果を表として確認する</span></span>
+<span id="cb29-470"><a href="#cb29-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-471"><a href="#cb29-471" aria-hidden="true" tabindex="-1"></a>データフレームにまとめて、緑、リター、地面の割合を確認します。</span>
+<span id="cb29-472"><a href="#cb29-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-475"><a href="#cb29-475" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-476"><a href="#cb29-476" aria-hidden="true" tabindex="-1"></a>summary_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb29-477"><a href="#cb29-477" aria-hidden="true" tabindex="-1"></a>    <span class="st">"class"</span>: [<span class="st">"green"</span>, <span class="st">"litter"</span>, <span class="st">"soil"</span>],</span>
+<span id="cb29-478"><a href="#cb29-478" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ratio"</span>: [green_ratio, litter_ratio, soil_ratio],</span>
+<span id="cb29-479"><a href="#cb29-479" aria-hidden="true" tabindex="-1"></a>    <span class="st">"percent"</span>: [green_ratio <span class="op">*</span> <span class="dv">100</span>, litter_ratio <span class="op">*</span> <span class="dv">100</span>, soil_ratio <span class="op">*</span> <span class="dv">100</span>],</span>
+<span id="cb29-480"><a href="#cb29-480" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb29-481"><a href="#cb29-481" aria-hidden="true" tabindex="-1"></a>summary_df</span>
+<span id="cb29-482"><a href="#cb29-482" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-483"><a href="#cb29-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-484"><a href="#cb29-484" aria-hidden="true" tabindex="-1"></a><span class="fu"># 9. CSV と画像を保存する</span></span>
+<span id="cb29-485"><a href="#cb29-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-486"><a href="#cb29-486" aria-hidden="true" tabindex="-1"></a>最後に、解析結果をCSVファイルと画像ファイルとして保存します。</span>
+<span id="cb29-487"><a href="#cb29-487" aria-hidden="true" tabindex="-1"></a>CSVファイルには、画像のファイル名や解析日時、緑・リター・地面の割合、HSVのしきい値などを保存します。</span>
+<span id="cb29-488"><a href="#cb29-488" aria-hidden="true" tabindex="-1"></a>画像ファイルは、補正した画像と、分類結果を色分けした画像を保存します。</span>
+<span id="cb29-489"><a href="#cb29-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-492"><a href="#cb29-492" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-493"><a href="#cb29-493" aria-hidden="true" tabindex="-1"></a>csv_path, warped_path, segmented_path <span class="op">=</span> save_results(</span>
+<span id="cb29-494"><a href="#cb29-494" aria-hidden="true" tabindex="-1"></a>    image_path<span class="op">=</span>IMAGE_PATH,</span>
+<span id="cb29-495"><a href="#cb29-495" aria-hidden="true" tabindex="-1"></a>    output_dir<span class="op">=</span>OUTPUT_DIR,</span>
+<span id="cb29-496"><a href="#cb29-496" aria-hidden="true" tabindex="-1"></a>    warped<span class="op">=</span>warped_bgr,</span>
+<span id="cb29-497"><a href="#cb29-497" aria-hidden="true" tabindex="-1"></a>    segmented<span class="op">=</span>segmented_bgr,</span>
+<span id="cb29-498"><a href="#cb29-498" aria-hidden="true" tabindex="-1"></a>    green_ratio<span class="op">=</span>green_ratio,</span>
+<span id="cb29-499"><a href="#cb29-499" aria-hidden="true" tabindex="-1"></a>    litter_ratio<span class="op">=</span>litter_ratio,</span>
+<span id="cb29-500"><a href="#cb29-500" aria-hidden="true" tabindex="-1"></a>    soil_ratio<span class="op">=</span>soil_ratio,</span>
+<span id="cb29-501"><a href="#cb29-501" aria-hidden="true" tabindex="-1"></a>    green_params<span class="op">=</span>GREEN_HSV,</span>
+<span id="cb29-502"><a href="#cb29-502" aria-hidden="true" tabindex="-1"></a>    litter_params<span class="op">=</span>LITTER_HSV,</span>
+<span id="cb29-503"><a href="#cb29-503" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-504"><a href="#cb29-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-505"><a href="#cb29-505" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CSV path: </span><span class="sc">{</span>csv_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb29-506"><a href="#cb29-506" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Warped image path: </span><span class="sc">{</span>warped_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb29-507"><a href="#cb29-507" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Segmented image path: </span><span class="sc">{</span>segmented_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb29-508"><a href="#cb29-508" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
