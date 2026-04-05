@@ -9,8 +9,21 @@ import os
 import sys
 
 if getattr(sys, 'frozen', False):
-    # PyInstaller でビルドされた .exe 実行中
-    base_dir = os.path.dirname(sys.executable)
+    # PyInstaller でビルドされた実行ファイル
+    executable_dir = os.path.dirname(sys.executable)
+
+    # macOS の .app では実行ファイルが
+    # MyApp.app/Contents/MacOS/ 配下にあるため、
+    # output は .app と同じ階層（例: dist/output）に保存する
+    if sys.platform == "darwin" and ".app/Contents/MacOS" in executable_dir:
+        base_dir = os.path.dirname(
+            os.path.dirname(
+                os.path.dirname(executable_dir)
+            )
+        )
+    else:
+        # Windows / Linux の onedir 想定: 実行ファイルのあるフォルダを基準
+        base_dir = executable_dir
 else:
     # 通常の Python 実行中（実行場所に依存しないよう、スクリプト配置場所を基準にする）
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
