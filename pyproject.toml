@@ -9,4 +9,5 @@ dependencies = [
     "matplotlib>=3.10.8",
     "opencv-python>=4.13.0.92",
     "pandas>=3.0.2",
+    "pyinstaller>=6.19.0",
 ]
