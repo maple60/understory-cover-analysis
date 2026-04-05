@@ -1,0 +1,2 @@
+file_path,file_name,time,green_ratio,litter_ratio,soil_ratio,hmin_green,hmax_green,smin_green,smax_green,vmin_green,vmax_green,hmin_litter,hmax_litter,smin_litter,smax_litter,vmin_litter,vmax_litter
+data/forest_cover_example.JPG,forest_cover_example.JPG,2026/04/05 12:46:52,0.18431,0.71397,0.10172,35,95,0,255,0,255,0,179,0,255,0,150
