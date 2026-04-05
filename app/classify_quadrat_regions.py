@@ -12,8 +12,8 @@ if getattr(sys, 'frozen', False):
     # PyInstaller でビルドされた .exe 実行中
     base_dir = os.path.dirname(sys.executable)
 else:
-    # 通常の Python 実行中
-    base_dir = os.getcwd()
+    # 通常の Python 実行中（実行場所に依存しないよう、スクリプト配置場所を基準にする）
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Tkinterのルートウィンドウを隠す
 root = tk.Tk()
@@ -36,6 +36,9 @@ if image is None:
     print("画像の読み込みに失敗しました。")
     exit()
 image_display = image.copy()
+
+# OpenCV最適化（環境依存だが、利用可能な場合は描画と処理の体感が改善する）
+cv2.setUseOptimized(True)
 
 # BGR → RGB に変換（matplotlib表示用）
 image_rgb = cv2.cvtColor(image_display, cv2.COLOR_BGR2RGB)
@@ -122,6 +125,7 @@ warped = cv2.warpPerspective(image, M, (width, height))
 
 # HSVに変換
 hsv = cv2.cvtColor(warped, cv2.COLOR_BGR2HSV)
+warped_preview = cv2.resize(warped, (500, 500), interpolation=cv2.INTER_AREA)
 
 cv2.namedWindow("Mask Comparison", cv2.WINDOW_NORMAL)
 
@@ -152,7 +156,7 @@ while True:
 
     # リサイズ（表示用）
     display_left = cv2.resize(masked, (500, 500))
-    display_right = cv2.resize(warped, (500, 500))
+    display_right = warped_preview
     display = np.hstack((display_left, display_right))
 
     # 割合計算
@@ -181,8 +185,9 @@ while True:
     # 表示
     cv2.imshow("Mask Comparison", annotated)
 
-    # 'q'で終了
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    # 'q' または ESC で終了
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q') or key == 27:
         break
 
 cv2.destroyAllWindows()
@@ -259,8 +264,9 @@ while True:
     # --- 表示 ---
     cv2.imshow("Litter Classifier", combined_annotated)
 
-    # 終了キー
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    # 'q' または ESC で終了
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q') or key == 27:
         break
 
 cv2.destroyAllWindows()
@@ -301,6 +307,7 @@ df = pd.DataFrame({
 
 #csv_path = "output/classify_quadrat_regions.csv"
 csv_path = os.path.join(base_dir, "output", "classify_quadrat_regions.csv")
+os.makedirs(os.path.dirname(csv_path), exist_ok=True)
 
 if os.path.exists(csv_path):
     # 既存CSVを読み込み
