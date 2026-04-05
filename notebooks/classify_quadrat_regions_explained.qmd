@@ -1,40 +1,41 @@
 ---
-title: "区画画像の領域分類を説明しながら進める（非インタラクティブ版）"
+title: "下層植生の解析について"
 format:
   html:
     toc: true
     toc-depth: 3
     code-fold: false
     code-tools: true
-jupyter: python3
 execute:
   echo: true
   warning: false
   error: true
-params:
-  image_path: "data/A065_kasou_01.JPG"
-  width: 1000
-  height: 1000
-  output_dir: "output"
 ---
 
-# この文書で行うこと
+## 目的
 
-この文書では、区画画像について次の流れで解析を進めます。
+このノートブックは、下層植生の被覆率を推定するための画像解析の手順を説明するものです。
+下層植生にコドラートという1m四方の区画を設置し、その区画を撮影した画像を解析して、植物被覆、リター（落葉・落枝）、地面の割合を推定します。
+
+## 解析の流れ
+
+次の流れで解析を進めます。
 
 1. 画像を読み込む
-2. 区画の四隅を **固定座標** で指定する
+2. コドラートの四隅を指定する
 3. 射影変換で真上から見た正方形画像に補正する
-4. HSV しきい値で緑領域を抽出する
-5. 緑以外の領域からリターを抽出する
+4. HSVしきい値で緑領域を抽出する
+5. 緑以外の領域からリター(落葉・落枝)を抽出する
 6. 残りを地面として扱う
-7. 面積割合を計算し、CSV と画像を保存する
+7. 面積割合を計算し、CSVと画像を保存する
 
-元の Python スクリプトは GUI 操作（ファイルダイアログ、4点クリック、OpenCV スライダー）を前提としていました。
+なお、実際の解析では、2のコドラートの四隅の指定や4のHSVしきい値の調整は[`tkinter`](https://docs.python.org/3/library/tkinter.html)というPythonのGUIライブラリ[^1]を使って、画像を見ながらインタラクティブに行いました。
 
-この qmd では、**説明用ノートブックとして再現しやすいように、対話操作を一旦外した**構成にしています。
+[^1]: GUI (Graphical User Interface) とは、マウスやキーボードを使って視覚的に操作できるインターフェースのことです。`tkinter`はPythonでGUIアプリケーションを作成するための標準ライブラリです。
 
-# ライブラリの読み込み
+本ノートブックでは、コドラートの四隅の座標やHSVのしきい値を固定値で指定して、解析の流れを説明します。
+
+## ライブラリの読み込み
 
 ```{python}
 from datetime import datetime
@@ -44,24 +45,43 @@ import cv2
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 ```
 
-# パラメータ設定
+## パラメータ設定
+
+生きた植物の緑の部分や、リターの明るめの茶色を抽出するために、HSV色空間を利用して、色相（Hue）と彩度（Saturation）をしきい値で指定します。
+今回は、ここで手動で指定した値を使って解析を行いますが、実際の解析では、画像を見ながらインタラクティブに調整していました。
+
+::: {.callout-note}
+## HSV色空間
+
+HSV色空間とは、色を表現する方法の一つで、色相（Hue）、彩度（Saturation）、明度（Value）という3つの要素で色を表現します。
+
+- 色相（Hue）: 色の種類を表す要素で、0から179の値で円のように表されます (色相環)。赤が0、緑が60、青が120に対応します。
+- 彩度（Saturation）: 色の鮮やかさを表す要素で、0から255の値で表されます。0は無彩色（グレー）、255は最も鮮やかな色になります。
+- 明度（Value）: 色の明るさを表す要素で、0から255の値で表されます。0は完全な黒、255は完全な白になります。
+
+詳細については、[HSV色空間について](hsv_color_space.qmd)をご覧ください。
+:::
 
 ```{python}
-IMAGE_PATH = Path(params.get("image_path", "data/A065_kasou_01.JPG"))
-WIDTH = int(params.get("width", 1000))
-HEIGHT = int(params.get("height", 1000))
-OUTPUT_DIR = Path(params.get("output_dir", "output"))
+IMAGE_PATH = Path("data/forest_cover_example.JPG")  # 解析する画像のパス
+WIDTH = 1000  # 出力画像の幅
+HEIGHT = 1000  # 出力画像の高さ
+OUTPUT_DIR = Path("output")  # 結果の出力先ディレクトリ
 
-# 非インタラクティブ用の固定値
+# コドラートの四隅の座標
+# 画像によって変わるので、必要に応じて更新してください
 PTS_SRC_MANUAL = [
-    (970, 230),   # 左上
-    (3000, 95),   # 右上
-    (2950, 2450), # 右下
+    (970, 230),  # 左上
+    (3000, 95),  # 右上
+    (2950, 2450),  # 右下
     (400, 2280),  # 左下
 ]
 
+# 緑の領域を抽出するためのHSV範囲
+# 画像によって変わるので、必要に応じて更新してください
 GREEN_HSV = {
     "hmin": 35,
     "hmax": 95,
@@ -71,6 +91,8 @@ GREEN_HSV = {
     "vmax": 255,
 }
 
+# リターの領域を抽出するためのHSV範囲
+# 画像によって変わるので、必要に応じて更新してください
 LITTER_HSV = {
     "hmin": 0,
     "hmax": 179,
@@ -80,14 +102,17 @@ LITTER_HSV = {
     "vmax": 150,
 }
 
+# 出力設定
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 (OUTPUT_DIR / "figures" / "quadrat_warped").mkdir(parents=True, exist_ok=True)
 (OUTPUT_DIR / "figures" / "quadrat_segmented").mkdir(parents=True, exist_ok=True)
 ```
 
-# 補助関数
+## 補助関数
 
-## 4 点の順序を整える
+### 4点の順序を整える
+
+四隅の座標の順序は、射影変換の関数に渡す前に、**左上 → 右上 → 右下 → 左下** の順になるように整える必要があります。
 
 ```{python}
 def order_points_by_angle(pts):
@@ -100,7 +125,10 @@ def order_points_by_angle(pts):
     return ordered
 ```
 
-## 射影変換
+### 射影変換
+
+射影変換とは、画像の中の特定の4点を、別の4点に対応させる変換のことです。
+今回は、区画の四隅を、幅1000×高さ1000の正方形の四隅に対応させることで、**区画を真上から見たような画像に補正**します。
 
 ```{python}
 def warp_quadrat(image_bgr, pts_src, width=1000, height=1000):
@@ -116,7 +144,7 @@ def warp_quadrat(image_bgr, pts_src, width=1000, height=1000):
     return warped, M
 ```
 
-## HSV 範囲でマスクを作成
+### HSV 範囲でマスクを作成
 
 ```{python}
 def make_hsv_mask(hsv_image, hsv_params):
@@ -125,7 +153,7 @@ def make_hsv_mask(hsv_image, hsv_params):
     return cv2.inRange(hsv_image, lower, upper)
 ```
 
-## 結果保存
+### 結果保存
 
 ```{python}
 def save_results(
@@ -184,7 +212,12 @@ def save_results(
     return csv_path, warped_path, segmented_path
 ```
 
-# 1. 画像の読み込み
+## 解析
+
+### 1. 画像の読み込み
+
+ここから実際の解析の手順を説明します。
+まずは、解析する画像を読み込みます。
 
 ```{python}
 if not IMAGE_PATH.exists():
@@ -195,37 +228,67 @@ if image_bgr is None:
     raise RuntimeError("画像の読み込みに失敗しました。")
 
 image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
-print(IMAGE_PATH)
-print(image_bgr.shape)
+print("画像ファイルのパス:", IMAGE_PATH)
+print("画像のサイズ:", image_bgr.shape)
 ```
 
+読み込んだ画像を確認します。
+
 ```{python}
+#| fig-cap: "読み込んだ画像"
+
 fig, ax = plt.subplots(figsize=(8, 8))
 ax.imshow(image_rgb)
-ax.set_title("Original image")
 ax.axis("off")
 plt.show()
 ```
 
-# 2. 区画の四隅を固定座標で指定する
+### 2. コドラートの四隅を指定する
+
+コドラートの四隅を指定します。
 
 ```{python}
 pts_src = order_points_by_angle(PTS_SRC_MANUAL)
 pts_src
 ```
 
+::: {.callout-note}
+## 画像処理における座標系
+
+画像処理においては、基本的に左上が原点(0, 0)で、右に行くほどx座標が大きくなり、下に行くほどy座標が大きくなる座標系が使われます。
+数学の教科書などで使われる、原点は中心で、右に行くほどx座標が大きくなり、上に行くほどy座標が大きくなる座標系とは逆になることに注意してください。
+:::
+
+画像に指定した4点をプロットして、正しい位置に指定できているか確認します。
+
 ```{python}
+#| fig-cap: "指定したコドラートの四隅の位置を確認する"
+
 fig, ax = plt.subplots(figsize=(8, 8))
 ax.imshow(image_rgb)
 for i, (x, y) in enumerate(pts_src):
     ax.scatter(x, y, c="red", s=50)
     ax.text(x + 10, y + 10, f"P{i + 1}", color="yellow", fontsize=12)
-ax.set_title("Selected quadrat corners (fixed)")
+ax.set_title("Selected quadrat corners")
 ax.axis("off")
 plt.show()
 ```
 
 # 3. 射影変換で正方形に補正する
+
+`src_pts`で指定した4点を、幅1000×高さ1000の正方形の四隅に対応させる射影変換を行います。
+これにより、区画を真上から見たような画像に補正し、解析しやすくします。
+
+::: {.callout-note}
+## 射影変換
+
+射影変換 (perspective transformation) とは、画像の中の特定の4点を、別の4点に対応させる変換のことです。
+この変換には、画像の拡大・縮小、回転、平行移動に加えて、遠近法による歪みも補正することができます。
+
+これにより、任意の四角形を別の四角形に移すことができるため、斜めから撮影した画像を、真上から見たような画像に補正することができます。
+
+詳細については、[射影変換について](projective_transformation.qmd)をご覧ください。
+:::
 
 ```{python}
 warped_bgr, transform_matrix = warp_quadrat(
@@ -239,14 +302,20 @@ transform_matrix
 ```
 
 ```{python}
+# | fig-cap: "射影変換した画像(真上から見たような画像)"
+
 fig, ax = plt.subplots(figsize=(8, 8))
 ax.imshow(warped_rgb)
-ax.set_title("Warped image (top-down view)")
 ax.axis("off")
 plt.show()
 ```
 
-# 4. 緑領域を抽出する（固定 HSV）
+# 4. 緑領域を抽出する
+
+生きた植物がどのくらいコドラートを被覆しているかを推定するために、緑の領域を抽出します。
+今回は、HSV色空間で指定した範囲を使って、緑の領域を抽出します。
+
+しかし、植物によって葉の色が異なったり、光の当たり方によって同じ葉でも色が変わったりするため、緑の領域を完全に抽出することは難しいことが多いです。
 
 ```{python}
 hsv = cv2.cvtColor(warped_bgr, cv2.COLOR_BGR2HSV)
@@ -254,6 +323,8 @@ mask_green = make_hsv_mask(hsv, GREEN_HSV)
 ```
 
 ```{python}
+# | fig-cap: "緑の領域を抽出したマスク画像"
+
 green_overlay = warped_rgb.copy()
 green_overlay[mask_green > 0] = [180, 180, 0]
 
@@ -264,6 +335,9 @@ plt.axis("off")
 plt.show()
 ```
 
+緑の領域が全体の何割を占めているか計算します。
+これが**被度の推定値**になります。
+
 ```{python}
 total_pixels = mask_green.shape[0] * mask_green.shape[1]
 green_pixels = cv2.countNonZero(mask_green)
@@ -271,7 +345,13 @@ green_ratio = green_pixels / total_pixels
 print(f"green_ratio = {green_ratio:.4f} ({green_ratio * 100:.2f}%)")
 ```
 
-# 5. 緑以外からリターを抽出する（固定 HSV）
+# 5. 緑以外からリターを抽出する
+
+植物被覆以外の領域は、リター（落葉・落枝）と地面に分けて考えることができます。
+リターは、明るめの茶色の領域として抽出できることが多いです。
+
+ここでは、緑の領域を除いた領域から、リターを抽出します。
+これで、緑の領域、リターの領域、地面の領域の3つに分類することができます。
 
 ```{python}
 mask_not_green = cv2.bitwise_not(mask_green)
@@ -280,6 +360,9 @@ mask_litter = cv2.bitwise_and(mask_litter_raw, mask_not_green)
 ```
 
 # 6. 地面を残差として定義する
+
+植物の緑の領域とリターの領域を抽出した後、残りの領域を地面として定義します。
+実際にはリターと地面の境界は曖昧なことが多いですが、ここでは単純に緑とリター以外を地面とします。
 
 ```{python}
 mask_soil = cv2.bitwise_and(mask_not_green, cv2.bitwise_not(mask_litter))
@@ -298,24 +381,54 @@ print(f"sum          = {(green_ratio + litter_ratio + soil_ratio):.4f}")
 
 # 7. 最終分類画像を作る
 
+植物被覆、リター、地面の領域を色分けして、最終的な分類画像を作ります。
+植物被覆を緑、リターをオレンジ、地面を紫で表示します。
+
 ```{python}
 segmented_bgr = warped_bgr.copy()
-segmented_bgr[mask_green > 0] = (180, 180, 0)
-segmented_bgr[mask_litter > 0] = (0, 170, 255)
-segmented_bgr[mask_soil > 0] = (204, 102, 153)
+segmented_bgr[mask_green > 0] = (115, 158, 0)
+segmented_bgr[mask_litter > 0] = (0, 159, 230)
+segmented_bgr[mask_soil > 0] = (167, 121, 204)
 
 segmented_rgb = cv2.cvtColor(segmented_bgr, cv2.COLOR_BGR2RGB)
 ```
 
 ```{python}
-plt.figure(figsize=(8, 8))
-plt.imshow(segmented_rgb)
-plt.title("Segmented quadrat image")
-plt.axis("off")
+# | fig-cap: "分類結果の画像"
+
+fig, ax = plt.subplots(figsize=(8, 8))
+ax.imshow(segmented_rgb)
+ax.axis("off")
+legend_handles = [
+    mpatches.Patch(color=(0 / 255, 158 / 255, 115 / 255), label="Green"),
+    mpatches.Patch(color=(230 / 255, 159 / 255, 0 / 255), label="Litter"),
+    mpatches.Patch(color=(204 / 255, 121 / 255, 167 / 255), label="Soil"),
+]
+plt.legend(handles=legend_handles, loc="upper right", frameon=True)
+plt.show()
+```
+
+もとの画像と並べて表示します。
+
+```{python}
+# | layout-ncol: 2
+# | fig-cap:
+# |   - "射影変換した画像"
+# |   - "分類結果の画像"
+
+fig, axes = plt.subplots()
+axes.imshow(warped_rgb)
+axes.axis("off")
+plt.show()
+fig, axes = plt.subplots()
+axes.imshow(segmented_rgb)
+axes.axis("off")
 plt.show()
 ```
 
 # 8. 結果を表として確認する
+
+データフレームにまとめて、緑、リター、地面の割合を確認します。
 
 ```{python}
 summary_df = pd.DataFrame({
@@ -327,6 +440,10 @@ summary_df
 ```
 
 # 9. CSV と画像を保存する
+
+最後に、解析結果をCSVファイルと画像ファイルとして保存します。
+CSVファイルには、画像のファイル名や解析日時、緑・リター・地面の割合、HSVのしきい値などを保存します。
+画像ファイルは、補正した画像と、分類結果を色分けした画像を保存します。
 
 ```{python}
 csv_path, warped_path, segmented_path = save_results(
@@ -341,24 +458,7 @@ csv_path, warped_path, segmented_path = save_results(
     litter_params=LITTER_HSV,
 )
 
-print(csv_path)
-print(warped_path)
-print(segmented_path)
+print(f"CSV path: {csv_path}")
+print(f"Warped image path: {warped_path}")
+print(f"Segmented image path: {segmented_path}")
 ```
-
-# 補足
-
-## この qmd 版で変えた点
-
-- ファイルダイアログを廃止し、`params.image_path` を使うようにした
-- 4点クリックを廃止し、`PTS_SRC_MANUAL` の固定座標を使うようにした
-- OpenCV スライダーを廃止し、`GREEN_HSV` と `LITTER_HSV` の固定値を使うようにした
-- 説明用ノートブックとして、同じ手順を毎回再現しやすくした
-
-## 運用メモ
-
-必要に応じて、画像ごとに以下だけ更新すれば使い回せます。
-
-1. `params.image_path`
-2. `PTS_SRC_MANUAL`
-3. `GREEN_HSV` / `LITTER_HSV`
