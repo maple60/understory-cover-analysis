@@ -10,6 +10,12 @@ website:
     left:
       - href: index.qmd
         text: "Home"
+      - href: notebooks/classify_quadrat_regions_explained.qmd
+        text: "下層植生の分類方法について"
+      - href: notebooks/hsv_color_space.qmd
+        text: "HSV色空間について"
+      - href: notebooks/projective_transformation.qmd
+        text: "射影変換について"
 
 format:
   html:
