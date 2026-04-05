@@ -36,6 +36,17 @@ source .venv/bin/activate
 deactivate
 ```
 
+## 下層植生分類プログラムの実行
+
+仮想環境を有効化した状態で、以下のコマンドを実行してください。
+
+```bash
+uv run python app/classify_quadrat_regions.py
+```
+
+アプリケーションが立ち上がります。
+解析したい下層植生の撮影画像を選択し、分類を実行してください。
+
 ## Webページのビルドについて
 
 ローカル確認:
@@ -51,3 +62,18 @@ quarto render
 ```
 
 GitHub Pagesの機能を利用して公開しています。
+
+## アプリのビルドについて
+
+[pyinstaller](https://pyinstaller.org/en/stable/)を使って、スタンドアロンのアプリケーションを作成できるようにしました。
+手動で解析アプリをビルドする場合は、ターミナルから以下のコマンドを実行してください。
+
+```bash
+pyinstaller --onedir --windowed app/classify_quadrat_regions.py
+```
+
+また、`spec`ファイルからビルドすることもできます。
+
+```bash
+pyinstaller classify_quadrat_regions.spec
+```
