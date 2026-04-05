@@ -30,6 +30,18 @@ Mac/Linux:
 source .venv/bin/activate
 ```
 
+Windows:
+
+```powershell
+.venv\Scripts\activate
+```
+
+その後、以下のコマンドを実行します。
+
+```bash
+uv sync
+```
+
 無効化する際は、以下のコマンドを実行します。
 
 ```bash
