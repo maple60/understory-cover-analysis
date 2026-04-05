@@ -148,6 +148,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+    <a href="https://github.com/maple60/understory-cover-analysis" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -230,7 +231,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="ライブラリの読み込み" class="level2">
 <h2 class="anchored" data-anchor-id="ライブラリの読み込み">ライブラリの読み込み</h2>
-<div id="02b8d7bf" class="cell" data-execution_count="1">
+<div id="d5150a40" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -263,7 +264,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>詳細については、<a href="../notebooks/hsv_color_space.html">HSV色空間について</a>をご覧ください。</p>
 </div>
 </div>
-<div id="204c57ef" class="cell" data-execution_count="2">
+<div id="556bffe3" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>IMAGE_PATH <span class="op">=</span> Path(<span class="st">"data/forest_cover_example.JPG"</span>)  <span class="co"># 解析する画像のパス</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>WIDTH <span class="op">=</span> <span class="dv">1000</span>  <span class="co"># 出力画像の幅</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>HEIGHT <span class="op">=</span> <span class="dv">1000</span>  <span class="co"># 出力画像の高さ</span></span>
@@ -311,7 +312,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="点の順序を整える" class="level3">
 <h3 class="anchored" data-anchor-id="点の順序を整える">4点の順序を整える</h3>
 <p>四隅の座標の順序は、射影変換の関数に渡す前に、<strong>左上 → 右上 → 右下 → 左下</strong> の順になるように整える必要があります。</p>
-<div id="795c0c4b" class="cell" data-execution_count="3">
+<div id="29abe02e" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> order_points_by_angle(pts):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pts <span class="op">=</span> np.array(pts, dtype<span class="op">=</span><span class="st">"float32"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    center <span class="op">=</span> np.mean(pts, axis<span class="op">=</span><span class="dv">0</span>)</span>
@@ -325,7 +326,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="射影変換" class="level3">
 <h3 class="anchored" data-anchor-id="射影変換">射影変換</h3>
 <p>射影変換とは、画像の中の特定の4点を、別の4点に対応させる変換のことです。 今回は、区画の四隅を、幅1000×高さ1000の正方形の四隅に対応させることで、<strong>区画を真上から見たような画像に補正</strong>します。</p>
-<div id="0ea46311" class="cell" data-execution_count="4">
+<div id="10064abf" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> warp_quadrat(image_bgr, pts_src, width<span class="op">=</span><span class="dv">1000</span>, height<span class="op">=</span><span class="dv">1000</span>):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    pts_dst <span class="op">=</span> np.array([</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        [<span class="dv">0</span>, <span class="dv">0</span>],</span>
@@ -341,7 +342,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="hsv-範囲でマスクを作成" class="level3">
 <h3 class="anchored" data-anchor-id="hsv-範囲でマスクを作成">HSV 範囲でマスクを作成</h3>
-<div id="7c1fc22f" class="cell" data-execution_count="5">
+<div id="58dc4770" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_hsv_mask(hsv_image, hsv_params):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    lower <span class="op">=</span> np.array([hsv_params[<span class="st">"hmin"</span>], hsv_params[<span class="st">"smin"</span>], hsv_params[<span class="st">"vmin"</span>]])</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    upper <span class="op">=</span> np.array([hsv_params[<span class="st">"hmax"</span>], hsv_params[<span class="st">"smax"</span>], hsv_params[<span class="st">"vmax"</span>]])</span>
@@ -350,7 +351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="結果保存" class="level3">
 <h3 class="anchored" data-anchor-id="結果保存">結果保存</h3>
-<div id="3022815b" class="cell" data-execution_count="6">
+<div id="233f5bb9" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_results(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    image_path,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    output_dir,</span>
@@ -413,7 +414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="画像の読み込み" class="level3">
 <h3 class="anchored" data-anchor-id="画像の読み込み">1. 画像の読み込み</h3>
 <p>ここから実際の解析の手順を説明します。 まずは、解析する画像を読み込みます。</p>
-<div id="533bd308" class="cell" data-execution_count="7">
+<div id="c1f79f1b" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> IMAGE_PATH.exists():</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">FileNotFoundError</span>(<span class="ss">f"画像が見つかりません: </span><span class="sc">{</span>IMAGE_PATH<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -430,7 +431,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>読み込んだ画像を確認します。</p>
-<div id="c4f36f69" class="cell" data-execution_count="8">
+<div id="8f834b97" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(image_rgb)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
@@ -448,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="コドラートの四隅を指定する" class="level3">
 <h3 class="anchored" data-anchor-id="コドラートの四隅を指定する">2. コドラートの四隅を指定する</h3>
 <p>コドラートの四隅を指定します。</p>
-<div id="d6b463d7" class="cell" data-execution_count="9">
+<div id="066fe2c3" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pts_src <span class="op">=</span> order_points_by_angle(PTS_SRC_MANUAL)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pts_src</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
@@ -472,7 +473,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>画像に指定した4点をプロットして、正しい位置に指定できているか確認します。</p>
-<div id="0ec2b458" class="cell" data-execution_count="10">
+<div id="9d12c28b" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(image_rgb)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (x, y) <span class="kw">in</span> <span class="bu">enumerate</span>(pts_src):</span>
@@ -510,7 +511,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>詳細については、<a href="../notebooks/projective_transformation.html">射影変換について</a>をご覧ください。</p>
 </div>
 </div>
-<div id="3d271806" class="cell" data-execution_count="11">
+<div id="533d122c" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>warped_bgr, transform_matrix <span class="op">=</span> warp_quadrat(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    image_bgr<span class="op">=</span>image_bgr,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    pts_src<span class="op">=</span>pts_src,</span>
@@ -525,7 +526,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
        [ 8.22125317e-05,  1.64443690e-04,  1.00000000e+00]])</code></pre>
 </div>
 </div>
-<div id="3835fd1a" class="cell" data-execution_count="12">
+<div id="4a0717b0" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(warped_rgb)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
@@ -544,11 +545,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>4. 緑領域を抽出する</h1>
 <p>生きた植物がどのくらいコドラートを被覆しているかを推定するために、緑の領域を抽出します。 今回は、HSV色空間で指定した範囲を使って、緑の領域を抽出します。</p>
 <p>しかし、植物によって葉の色が異なったり、光の当たり方によって同じ葉でも色が変わったりするため、緑の領域を完全に抽出することは難しいことが多いです。</p>
-<div id="350d7206" class="cell" data-execution_count="13">
+<div id="5fca87cc" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>hsv <span class="op">=</span> cv2.cvtColor(warped_bgr, cv2.COLOR_BGR2HSV)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>mask_green <span class="op">=</span> make_hsv_mask(hsv, GREEN_HSV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="7783c34e" class="cell" data-execution_count="14">
+<div id="bce2a531" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>green_overlay <span class="op">=</span> warped_rgb.copy()</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>green_overlay[mask_green <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> [<span class="dv">180</span>, <span class="dv">180</span>, <span class="dv">0</span>]</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -567,7 +568,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>緑の領域が全体の何割を占めているか計算します。 これが<strong>被度の推定値</strong>になります。</p>
-<div id="c254158a" class="cell" data-execution_count="15">
+<div id="bb4c17fd" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>total_pixels <span class="op">=</span> mask_green.shape[<span class="dv">0</span>] <span class="op">*</span> mask_green.shape[<span class="dv">1</span>]</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>green_pixels <span class="op">=</span> cv2.countNonZero(mask_green)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>green_ratio <span class="op">=</span> green_pixels <span class="op">/</span> total_pixels</span>
@@ -581,7 +582,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>5. 緑以外からリターを抽出する</h1>
 <p>植物被覆以外の領域は、リター（落葉・落枝）と地面に分けて考えることができます。 リターは、明るめの茶色の領域として抽出できることが多いです。</p>
 <p>ここでは、緑の領域を除いた領域から、リターを抽出します。 これで、緑の領域、リターの領域、地面の領域の3つに分類することができます。</p>
-<div id="95d37b4e" class="cell" data-execution_count="16">
+<div id="cb4a8e9a" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mask_not_green <span class="op">=</span> cv2.bitwise_not(mask_green)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>mask_litter_raw <span class="op">=</span> make_hsv_mask(hsv, LITTER_HSV)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>mask_litter <span class="op">=</span> cv2.bitwise_and(mask_litter_raw, mask_not_green)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -590,7 +591,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="地面を残差として定義する" class="level1">
 <h1>6. 地面を残差として定義する</h1>
 <p>植物の緑の領域とリターの領域を抽出した後、残りの領域を地面として定義します。 実際にはリターと地面の境界は曖昧なことが多いですが、ここでは単純に緑とリター以外を地面とします。</p>
-<div id="3b3244e0" class="cell" data-execution_count="17">
+<div id="e176074e" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>mask_soil <span class="op">=</span> cv2.bitwise_and(mask_not_green, cv2.bitwise_not(mask_litter))</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>litter_pixels <span class="op">=</span> cv2.countNonZero(mask_litter)</span>
@@ -614,7 +615,7 @@ sum          = 1.0000</code></pre>
 <section id="最終分類画像を作る" class="level1">
 <h1>7. 最終分類画像を作る</h1>
 <p>植物被覆、リター、地面の領域を色分けして、最終的な分類画像を作ります。 植物被覆を緑、リターをオレンジ、地面を紫で表示します。</p>
-<div id="4bfbbdf2" class="cell" data-execution_count="18">
+<div id="ea58862b" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>segmented_bgr <span class="op">=</span> warped_bgr.copy()</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>segmented_bgr[mask_green <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> (<span class="dv">115</span>, <span class="dv">158</span>, <span class="dv">0</span>)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>segmented_bgr[mask_litter <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">159</span>, <span class="dv">230</span>)</span>
@@ -622,7 +623,7 @@ sum          = 1.0000</code></pre>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>segmented_rgb <span class="op">=</span> cv2.cvtColor(segmented_bgr, cv2.COLOR_BGR2RGB)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="8e298444" class="cell" data-execution_count="19">
+<div id="582989ed" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(segmented_rgb)</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
@@ -651,7 +652,7 @@ sum          = 1.0000</code></pre>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>axes.imshow(segmented_rgb)</span>
 <span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>axes.axis(<span class="st">"off"</span>)</span>
 <span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="1076d2b4" class="cell quarto-layout-panel" data-layout-ncol="2" data-execution_count="20">
+<div id="3e51a241" class="cell quarto-layout-panel" data-layout-ncol="2" data-execution_count="20">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -675,7 +676,7 @@ sum          = 1.0000</code></pre>
 <section id="結果を表として確認する" class="level1">
 <h1>8. 結果を表として確認する</h1>
 <p>データフレームにまとめて、緑、リター、地面の割合を確認します。</p>
-<div id="62f3c762" class="cell" data-execution_count="21">
+<div id="f2d57cec" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>summary_df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"class"</span>: [<span class="st">"green"</span>, <span class="st">"litter"</span>, <span class="st">"soil"</span>],</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ratio"</span>: [green_ratio, litter_ratio, soil_ratio],</span>
@@ -724,7 +725,7 @@ sum          = 1.0000</code></pre>
 <section id="csv-と画像を保存する" class="level1">
 <h1>9. CSV と画像を保存する</h1>
 <p>最後に、解析結果をCSVファイルと画像ファイルとして保存します。 CSVファイルには、画像のファイル名や解析日時、緑・リター・地面の割合、HSVのしきい値などを保存します。 画像ファイルは、補正した画像と、分類結果を色分けした画像を保存します。</p>
-<div id="8bab0af1" class="cell" data-execution_count="22">
+<div id="89e69002" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>csv_path, warped_path, segmented_path <span class="op">=</span> save_results(</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    image_path<span class="op">=</span>IMAGE_PATH,</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    output_dir<span class="op">=</span>OUTPUT_DIR,</span>

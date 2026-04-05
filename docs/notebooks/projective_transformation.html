@@ -71,6 +71,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -110,6 +139,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+    <a href="https://github.com/maple60/understory-cover-analysis" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -144,6 +174,69 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>このノートブックでは、射影変換について簡単にまとめます。</p>
+<p>射影変換は、ある平面を別の平面に写す変換の一種で、画像処理やコンピュータビジョンの分野で広く使用されます。 たとえば、斜めから撮影した紙やホワイトボードの画像を、正面から見たように補正するときに使われます。</p>
+<p>アフィン変換も、拡大・縮小、回転、平行移動、せん断などを表せる重要な変換ですが、射影変換はそれをさらに一般化したものです。 アフィン変換では平行線は平行のまま保たれますが、射影変換では遠近感を扱えるため、平行線が一点に集まるような変形も表現できます。</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/projective_transformation_image.webp" class="img-fluid figure-img"></p>
+<figcaption>射影変換のイメージ図</figcaption>
+</figure>
+</div>
+<p>点(<span class="math inline">\(x, y\)</span>)を(<span class="math inline">\(x', y'\)</span>)に射影変換するとき、よく次の形で表されます。</p>
+<p><span class="math display">\[
+\begin{align*}
+x' &amp;= \frac{a x + b y + c}{g x + h y + 1} \\
+y' &amp;= \frac{d x + e y + f}{g x + h y + 1}
+\end{align*}
+\]</span></p>
+<p>ここで、<span class="math inline">\(a, b, c, d, e, f, g, h\)</span>は変換のパラメータです。 これらの値は、通常、一直線上にない4組の対応点から求めることができます。</p>
+<p>この式には分母に<span class="math inline">\(x\)</span>や<span class="math inline">\(y\)</span>が含まれるため、通常の2次元座標(<span class="math inline">\(x, y\)</span>)のままでは、単純な行列積だけで表すことができません。 そこで、<span class="math inline">\((x, y)\)</span>を<span class="math inline">\((x, y, 1)\)</span>のように1つ成分を増やした<strong>同次座標</strong>で表すと、変換を行列でまとめて扱えるようになります。</p>
+<p>同次座標では、<span class="math inline">\((X, Y, W)\)</span> と <span class="math inline">\((\lambda X, \lambda Y, \lambda W)\)</span>（<span class="math inline">\(\lambda \neq 0\)</span>）は同じ点を表します。 通常の座標は、<span class="math inline">\(W \neq 0\)</span> のとき</p>
+<p><span class="math display">\[x = \frac{X}{W},\; y = \frac{Y}{W}\]</span></p>
+<p>で得られます。</p>
+<p>この同次座標を用いると、<span class="math inline">\((x, y)\)</span> を <span class="math inline">\((x', y')\)</span> に射影変換するとき、以下のように$<span class="math inline">\(3 \times 3\)</span>の行列を使って表すことができます。</p>
+<p><span class="math display">\[
+\lambda
+\begin{bmatrix}
+x' \\
+y' \\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+a &amp; b &amp; c \\
+d &amp; e &amp; f \\
+g &amp; h &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y \\
+1
+\end{bmatrix}
+\]</span></p>
+<p>ここで、<span class="math inline">\(\lambda\)</span>はスケールを表す係数です。同次座標では定数倍したベクトルが同じ点を表すため、変換後の点は(<span class="math inline">\(x', y', 1\)</span>)そのものではなく、その定数倍で表されます。</p>
+<p>一般的には、真ん中の行列は<span class="math inline">\(h\)</span>と添字を使用して文字を少なくして表されることが多いです。</p>
+<p><span class="math display">\[
+\lambda
+\begin{bmatrix}
+x' \\
+y' \\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+h_{11} &amp; h_{12} &amp; h_{13} \\
+h_{21} &amp; h_{22} &amp; h_{23} \\
+h_{31} &amp; h_{32} &amp; h_{33}
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y \\
+1
+\end{bmatrix}
+\]</span></p>
+<p>このように、射影変換は、同次座標を用いることで、行列を用いて表すことができます。 この行列を<strong>ホモグラフィ行列</strong>と呼びます。</p>
+<p>このように同次座標を導入すると、射影変換を行列の形で統一的に表せます。 その結果、変換の合成や逆変換も線形代数の枠組みで扱いやすくなります。</p>
 
 
 

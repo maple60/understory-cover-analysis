@@ -110,6 +110,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+    <a href="https://github.com/maple60/understory-cover-analysis" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -144,6 +145,81 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>このノートブックでは、HSV色空間について簡単にまとめます。</p>
+<p>HSV色空間は、色を表すための方法の一つで、<strong>Hue（色相）</strong>、<strong>Saturation（彩度）</strong>、<strong>Value（明度）</strong>の3つの成分で色を表現します。</p>
+<ul>
+<li><strong>Hue（色相）</strong>: 色の種類を表す成分で、0°から360°の範囲で表されます。例えば、赤は0°、緑は120°、青は240°などです。</li>
+<li><strong>Saturation（彩度）</strong>: 色の鮮やかさを表す成分で、0から1の範囲で表されます。0は無彩色（グレー）を表し、1は完全な彩色を表します。</li>
+<li><strong>Value（明度）</strong>: 色の明るさを表す成分で、0から1の範囲で表されます。0は完全な黒を表し、1は完全な白を表します。</li>
+</ul>
+<p>よく説明に使用される六角錐モデルでは、Hueは円周上の角度で表され、Saturationは中心からの距離、Valueは高さで表されます。</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/hsv_model.svg" class="img-fluid figure-img"></p>
+<figcaption>HSV色空間のイメージ図</figcaption>
+</figure>
+</div>
+<p>色相については、<strong>色相環 color wheel</strong>という円形の図で表されることが多く、色の種類を視覚的に理解しやすくなっています。 以下の図はVが1のときの色相環を示しています。</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/color_wheel.webp" height="300" class="figure-img"></p>
+<figcaption>V=1のときの色相環</figcaption>
+</figure>
+</div>
+<p>また、H=0° (赤色)のときの彩度と明度の変化を以下の図に示します。</p>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/saturation.webp" class="img-fluid figure-img"></p>
+<figcaption>彩度の変化</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/value.webp" class="img-fluid figure-img"></p>
+<figcaption>明度の変化</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>HSV色空間は、画像処理やコンピュータビジョンの分野でよく使用されます。 利点としては、以下のような点が挙げられます。</p>
+<ul>
+<li><strong>明るさの変動を受けにくい</strong>: HSV色空間では、色相と彩度は明度の影響を受けにくいため、照明条件が変化しても色の特徴を捉えやすいです。</li>
+<li><strong>色の選択が直感的</strong>: 色相環を使って色を選ぶことができるため、色の選択が直感的に行えます。</li>
+</ul>
+<p>例えば、緑色の領域を抽出する場合、HSV色空間では色相が120°付近 (90°-180°程度)の範囲を指定することで、緑色を効率的に抽出できます。</p>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/color_wheel_green.webp" class="img-fluid figure-img"></p>
+<figcaption>V=1のときの色相環で緑の領域は120°付近</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/hsv_green_extraction.webp" class="img-fluid figure-img"></p>
+<figcaption>Hが90°-180°のときの緑の領域</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>また、リターは明るい茶色、地面は濃い茶色であるため、H=30°付近における、V (明度)を利用してこれらの領域を区別することができます。</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/litter_ground.webp" height="300" class="figure-img"></p>
+<figcaption>Vを利用してリターと地面を区別 (H=30°)</figcaption>
+</figure>
+</div>
+<p>実際の解析では、写真の明るさや影が異なる、葉の色はどれも一緒でない、地面とリターが明瞭に色が分かれていないことが多いです。 このため、各画像ごとに適切なHSVの範囲を選ぶ必要があります。</p>
 
 
 
