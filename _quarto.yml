@@ -19,8 +19,8 @@ website:
     tools:
       - icon: "github"
         href: "https://github.com/maple60/understory-cover-analysis"
-    repo-url: "https://github.com/maple60/understory-cover-analysis"
-    repo-actions: [edit, source, issue]
+  repo-url: "https://github.com/maple60/understory-cover-analysis"
+  repo-actions: [edit, source, issue]
 
 format:
   html:
