@@ -49,13 +49,6 @@
     "text": "解析\n\n1. 画像の読み込み\nここから実際の解析の手順を説明します。 まずは、解析する画像を読み込みます。\n\nif not IMAGE_PATH.exists():\n    raise FileNotFoundError(f\"画像が見つかりません: {IMAGE_PATH}\")\n\nimage_bgr = cv2.imread(str(IMAGE_PATH))\nif image_bgr is None:\n    raise RuntimeError(\"画像の読み込みに失敗しました。\")\n\nimage_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)\nprint(\"画像ファイルのパス:\", IMAGE_PATH)\nprint(\"画像のサイズ:\", image_bgr.shape)\n\n画像ファイルのパス: data/forest_cover_example.JPG\n画像のサイズ: (2832, 4240, 3)\n\n\n読み込んだ画像を確認します。\n\nfig, ax = plt.subplots(figsize=(8, 8))\nax.imshow(image_rgb)\nax.axis(\"off\")\nplt.show()\n\n\n\n\n読み込んだ画像\n\n\n\n\n\n\n2. コドラートの四隅を指定する\nコドラートの四隅を指定します。\n\npts_src = order_points_by_angle(PTS_SRC_MANUAL)\npts_src\n\narray([[ 970.,  230.],\n       [3000.,   95.],\n       [2950., 2450.],\n       [ 400., 2280.]], dtype=float32)\n\n\n\n\n\n\n\n\nNote画像処理における座標系\n\n\n\n画像処理においては、基本的に左上が原点(0, 0)で、右に行くほどx座標が大きくなり、下に行くほどy座標が大きくなる座標系が使われます。 数学の教科書などで使われる、原点は中心で、右に行くほどx座標が大きくなり、上に行くほどy座標が大きくなる座標系とは逆になることに注意してください。\n\n\n画像に指定した4点をプロットして、正しい位置に指定できているか確認します。\n\nfig, ax = plt.subplots(figsize=(8, 8))\nax.imshow(image_rgb)\nfor i, (x, y) in enumerate(pts_src):\n    ax.scatter(x, y, c=\"red\", s=50)\n    ax.text(x + 10, y + 10, f\"P{i + 1}\", color=\"yellow\", fontsize=12)\nax.set_title(\"Selected quadrat corners\")\nax.axis(\"off\")\nplt.show()\n\n\n\n\n指定したコドラートの四隅の位置を確認する"
   },
   {
-    "objectID": "notebooks/supplementary.html",
-    "href": "notebooks/supplementary.html",
-    "title": "下層植生の解析",
-    "section": "",
-    "text": "下層植生の解析についてまとめます。 下層植生に1m四方の枠をおいて、枠内の植生の被覆率を計算します。 一定面積医の枠のことをコドラート(quadrat)と呼びます。"
-  },
-  {
     "objectID": "notebooks/classify_quadrat_regions_explained.html#footnotes",
     "href": "notebooks/classify_quadrat_regions_explained.html#footnotes",
     "title": "下層植生の解析について",
@@ -63,17 +56,31 @@
     "text": "Footnotes\n\n\nGUI (Graphical User Interface) とは、マウスやキーボードを使って視覚的に操作できるインターフェースのことです。tkinterはPythonでGUIアプリケーションを作成するための標準ライブラリです。↩︎"
   },
   {
-    "objectID": "notebooks/hsv_color_space.html",
-    "href": "notebooks/hsv_color_space.html",
-    "title": "HSV色空間について",
-    "section": "",
-    "text": "このノートブックでは、HSV色空間について簡単にまとめます。"
-  },
-  {
     "objectID": "notebooks/projective_transformation.html",
     "href": "notebooks/projective_transformation.html",
     "title": "射影変換について",
     "section": "",
     "text": "このノートブックでは、射影変換について簡単にまとめます。"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "下層植生の解析",
+    "section": "",
+    "text": "このサイトは、下層植生の解析の手順と実行例をまとめたものです。"
+  },
+  {
+    "objectID": "index.html#コンテンツ",
+    "href": "index.html#コンテンツ",
+    "title": "下層植生の解析",
+    "section": "コンテンツ",
+    "text": "コンテンツ"
+  },
+  {
+    "objectID": "notebooks/hsv_color_space.html",
+    "href": "notebooks/hsv_color_space.html",
+    "title": "HSV色空間について",
+    "section": "",
+    "text": "このノートブックでは、HSV色空間について簡単にまとめます。"
   }
 ]
