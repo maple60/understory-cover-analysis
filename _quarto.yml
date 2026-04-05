@@ -18,8 +18,8 @@ website:
         text: "射影変換について"
     tools:
       - icon: "github"
-        href: "https://github.com/maple60/understory-cover-analysis"
-  repo-url: "https://github.com/maple60/understory-cover-analysis"
+        href: https://github.com/maple60/understory-cover-analysis
+  repo-url: https://github.com/maple60/understory-cover-analysis
   repo-actions: [edit, source, issue]
 
 format:
