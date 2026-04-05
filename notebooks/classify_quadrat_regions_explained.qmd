@@ -1,5 +1,5 @@
 ---
-title: "区画画像の領域分類を説明しながら進める"
+title: "区画画像の領域分類を説明しながら進める（非インタラクティブ版）"
 format:
   html:
     toc: true
@@ -12,11 +12,10 @@ execute:
   warning: false
   error: true
 params:
-  image_path: null
+  image_path: "data/A065_kasou_01.JPG"
   width: 1000
   height: 1000
   output_dir: "output"
-  use_file_dialog: true
 ---
 
 # この文書で行うこと
@@ -24,108 +23,71 @@ params:
 この文書では、区画画像について次の流れで解析を進めます。
 
 1. 画像を読み込む
-2. 区画の四隅を 4 点クリックで指定する
+2. 区画の四隅を **固定座標** で指定する
 3. 射影変換で真上から見た正方形画像に補正する
 4. HSV しきい値で緑領域を抽出する
 5. 緑以外の領域からリターを抽出する
 6. 残りを地面として扱う
 7. 面積割合を計算し、CSV と画像を保存する
 
-元の Python スクリプトは GUI 操作を前提としており、
-- 最初に画像ファイルを選ぶ
-- 四隅をクリックする
-- OpenCV のスライダーでしきい値を調整する
-という流れになっています。
+元の Python スクリプトは GUI 操作（ファイルダイアログ、4点クリック、OpenCV スライダー）を前提としていました。
 
-この qmd 版では、その処理を**手順ごとに説明しながら追える**ように分けています。
-
-## 実行上の注意
-
-この文書には `tkinter`、`matplotlib` のクリック操作、`OpenCV` のトラックバーを使う部分があります。
-そのため、**端末だけの完全自動レンダリングよりも、手元のローカル環境でチャンクごとに実行する使い方**に向いています。
-
-- Positron / VS Code / Jupyter 連携でチャンクを順に実行する
-- あるいは `quarto preview` で動かしながら確認する
-
-という使い方を想定しています。
+この qmd では、**説明用ノートブックとして再現しやすいように、対話操作を一旦外した**構成にしています。
 
 # ライブラリの読み込み
-
-まず、解析に必要なライブラリを読み込みます。
 
 ```{python}
 from datetime import datetime
 from pathlib import Path
 
-import os
 import cv2
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
-try:
-    import tkinter as tk
-    from tkinter import filedialog
-    TK_AVAILABLE = True
-except Exception:
-    TK_AVAILABLE = False
 ```
 
 # パラメータ設定
 
-Quarto の `params` を使って、画像パスや出力先を管理します。
-`image_path` を直接与えればその画像を使い、与えなければ必要に応じてファイルダイアログを開きます。
-
 ```{python}
-# IMAGE_PATH = params.get("image_path", None)
-IMAGE_PATH = "data/A065_kasou_01.JPG"  # 直接指定する場合はここにパスを入れる
+IMAGE_PATH = Path(params.get("image_path", "data/A065_kasou_01.JPG"))
 WIDTH = int(params.get("width", 1000))
 HEIGHT = int(params.get("height", 1000))
 OUTPUT_DIR = Path(params.get("output_dir", "output"))
-USE_FILE_DIALOG = bool(params.get("use_file_dialog", True))
+
+# 非インタラクティブ用の固定値
+PTS_SRC_MANUAL = [
+    (970, 230),   # 左上
+    (3000, 95),   # 右上
+    (2950, 2450), # 右下
+    (400, 2280),  # 左下
+]
+
+GREEN_HSV = {
+    "hmin": 35,
+    "hmax": 95,
+    "smin": 0,
+    "smax": 255,
+    "vmin": 0,
+    "vmax": 255,
+}
+
+LITTER_HSV = {
+    "hmin": 0,
+    "hmax": 179,
+    "smin": 0,
+    "smax": 255,
+    "vmin": 0,
+    "vmax": 150,
+}
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 (OUTPUT_DIR / "figures" / "quadrat_warped").mkdir(parents=True, exist_ok=True)
 (OUTPUT_DIR / "figures" / "quadrat_segmented").mkdir(parents=True, exist_ok=True)
 ```
 
-# 補助関数の定義
+# 補助関数
 
-ここでは、元スクリプトの処理を再利用しやすいように関数に分けます。
-
-## 画像パスの解決
-
-```{python}
-def resolve_image_path(image_path=None, use_file_dialog=True):
-    if image_path is not None:
-        image_path = Path(image_path)
-        if not image_path.exists():
-            raise FileNotFoundError(f"画像が見つかりません: {image_path}")
-        return image_path
-
-    if use_file_dialog:
-        if not TK_AVAILABLE:
-            raise RuntimeError(
-                "tkinter が使えないため、ファイルダイアログを開けません。params.image_path を指定してください。"
-            )
-        root = tk.Tk()
-        root.withdraw()
-        selected = filedialog.askopenfilename(
-            title="Select Image",
-            filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.tif *.tiff")],
-        )
-        root.destroy()
-        if not selected:
-            raise RuntimeError("画像が選択されませんでした。")
-        return Path(selected)
-
-    raise RuntimeError("params.image_path が未指定です。")
-```
-
-## 4 点の順序を整える関数
-
-元スクリプトでは、4 つのクリック点をそのまま使うのではなく、
-重心から見た角度順に並べ、さらに左上に最も近い点から始まるように調整しています。
+## 4 点の順序を整える
 
 ```{python}
 def order_points_by_angle(pts):
@@ -138,50 +100,7 @@ def order_points_by_angle(pts):
     return ordered
 ```
 
-## 4 点クリック用の関数
-
-```{python}
-def pick_four_points(image_bgr, preset_points=None):
-    if preset_points is not None:
-        if len(preset_points) != 4:
-            raise ValueError("preset_points には 4 点の座標を指定してください。")
-        return order_points_by_angle(preset_points)
-
-    image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
-    clicked_points = []
-
-    fig, ax = plt.subplots(figsize=(8, 8))
-    ax.imshow(image_rgb)
-    ax.set_title("Click 4 points (corners of the quadrat)\nClose window if done")
-    ax.axis("off")
-
-    def on_click(event):
-        if event.inaxes:
-            x, y = int(event.xdata), int(event.ydata)
-            clicked_points.append((x, y))
-            ax.plot(x, y, 'ro')
-            fig.canvas.draw()
-            if len(clicked_points) == 4:
-                plt.close(fig)
-
-    cid = fig.canvas.mpl_connect('button_press_event', on_click)
-    plt.show()
-    fig.canvas.mpl_disconnect(cid)
-    plt.close(fig)
-
-    if len(clicked_points) != 4:
-        raise RuntimeError(
-            "4点が選択されていません。"
-            " Notebook では `%matplotlib widget` を有効化するか、"
-            " `PTS_SRC_MANUAL` に座標を直接指定してください。"
-        )
-
-    return order_points_by_angle(clicked_points)
-```
-
 ## 射影変換
-
-指定した4点をもとに、コドラートを真上から見た正方形画像へ変換します。
 
 ```{python}
 def warp_quadrat(image_bgr, pts_src, width=1000, height=1000):
@@ -189,7 +108,7 @@ def warp_quadrat(image_bgr, pts_src, width=1000, height=1000):
         [0, 0],
         [width - 1, 0],
         [width - 1, height - 1],
-        [0, height - 1]
+        [0, height - 1],
     ], dtype="float32")
 
     M = cv2.getPerspectiveTransform(pts_src, pts_dst)
@@ -197,91 +116,16 @@ def warp_quadrat(image_bgr, pts_src, width=1000, height=1000):
     return warped, M
 ```
 
-## HSV しきい値を対話的に調整する関数
-
-この関数は、OpenCV のトラックバーで HSV の範囲を調整し、
-`q` キーが押された時点の設定を返します。
+## HSV 範囲でマスクを作成
 
 ```{python}
-def interactive_hsv_mask(hsv_image, original_bgr, window_name, initial_values):
-    cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-
-    def nothing(x):
-        pass
-
-    for key, value, max_value in [
-        ("H min", initial_values["H min"], 179),
-        ("H max", initial_values["H max"], 179),
-        ("S min", initial_values["S min"], 255),
-        ("S max", initial_values["S max"], 255),
-        ("V min", initial_values["V min"], 255),
-        ("V max", initial_values["V max"], 255),
-    ]:
-        cv2.createTrackbar(key, window_name, int(value), int(max_value), nothing)
-
-    final_values = None
-    final_mask = None
-
-    while True:
-        hmin = cv2.getTrackbarPos("H min", window_name)
-        hmax = cv2.getTrackbarPos("H max", window_name)
-        smin = cv2.getTrackbarPos("S min", window_name)
-        smax = cv2.getTrackbarPos("S max", window_name)
-        vmin = cv2.getTrackbarPos("V min", window_name)
-        vmax = cv2.getTrackbarPos("V max", window_name)
-
-        lower = np.array([hmin, smin, vmin])
-        upper = np.array([hmax, smax, vmax])
-        mask = cv2.inRange(hsv_image, lower, upper)
-        masked = cv2.bitwise_and(original_bgr, original_bgr, mask=mask)
-
-        display_left = cv2.resize(masked, (500, 500))
-        display_right = cv2.resize(original_bgr, (500, 500))
-        display = np.hstack((display_left, display_right))
-
-        total_pixels = mask.shape[0] * mask.shape[1]
-        class_pixels = cv2.countNonZero(mask)
-        other_pixels = total_pixels - class_pixels
-        class_ratio = 100 * class_pixels / total_pixels
-        other_ratio = 100 * other_pixels / total_pixels
-
-        annotated = cv2.copyMakeBorder(
-            display, 0, 50, 0, 0,
-            cv2.BORDER_CONSTANT,
-            value=(255, 255, 255)
-        )
-        text = f"Selected: {class_ratio:.2f}% | Other: {other_ratio:.2f}%"
-        cv2.putText(
-            annotated,
-            text,
-            (10, display.shape[0] + 30),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.8,
-            (0, 0, 0),
-            1,
-            cv2.LINE_AA,
-        )
-
-        cv2.imshow(window_name, annotated)
-
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord('q'):
-            final_values = {
-                "hmin": hmin,
-                "hmax": hmax,
-                "smin": smin,
-                "smax": smax,
-                "vmin": vmin,
-                "vmax": vmax,
-            }
-            final_mask = mask.copy()
-            break
-
-    cv2.destroyWindow(window_name)
-    return final_values, final_mask
+def make_hsv_mask(hsv_image, hsv_params):
+    lower = np.array([hsv_params["hmin"], hsv_params["smin"], hsv_params["vmin"]])
+    upper = np.array([hsv_params["hmax"], hsv_params["smax"], hsv_params["vmax"]])
+    return cv2.inRange(hsv_image, lower, upper)
 ```
 
-## 結果保存用の関数
+## 結果保存
 
 ```{python}
 def save_results(
@@ -342,89 +186,51 @@ def save_results(
 
 # 1. 画像の読み込み
 
-まず対象画像を読み込み、RGB に直して確認します。
-
 ```{python}
-image_path = resolve_image_path(IMAGE_PATH, USE_FILE_DIALOG)
-image_bgr = cv2.imread(str(image_path))
+if not IMAGE_PATH.exists():
+    raise FileNotFoundError(f"画像が見つかりません: {IMAGE_PATH}")
+
+image_bgr = cv2.imread(str(IMAGE_PATH))
 if image_bgr is None:
     raise RuntimeError("画像の読み込みに失敗しました。")
 
 image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
-print(image_path)
+print(IMAGE_PATH)
 print(image_bgr.shape)
 ```
-
-画像を[matplotlib](https://matplotlib.org/)で表示して確認します。
 
 ```{python}
 fig, ax = plt.subplots(figsize=(8, 8))
 ax.imshow(image_rgb)
-ax.set_title("Original Image")
+ax.set_title("Original image")
+ax.axis("off")
 plt.show()
 ```
 
-# 2. 区画の四隅を指定する
-
-ここでは区画の四隅を 4 点クリックで指定します。
-
-- クリック順は厳密でなくてよい
-- あとで `order_points_by_angle()` で順序を補正する
-
-公開ノートブックでは、最初から座標を与えています。
-ちなみに、画像解析では、原点は慣例的に左上、x軸は右向き、y軸は下向きになることに注意してください。
+# 2. 区画の四隅を固定座標で指定する
 
 ```{python}
-# PTS_SRC_MANUAL = None
-PTS_SRC_MANUAL = [
-    (970, 230),  # 左上 P1
-    (3000, 95),  # 右上 P2
-    (2950, 2450),  # 右下 P3
-    (400, 2280),  # 左下 P4
-]
-# 例:
-# PTS_SRC_MANUAL = [
-#     (120, 100),  # 左上
-#     (880, 95),   # 右上
-#     (900, 910),  # 右下
-#     (110, 930),  # 左下
-# ]
-
-pts_src = pick_four_points(image_bgr, preset_points=PTS_SRC_MANUAL)
-# pts_src
+pts_src = order_points_by_angle(PTS_SRC_MANUAL)
+pts_src
 ```
 
-クリックした点の位置を元画像上に重ねて確認します。
-
 ```{python}
-preview = image_rgb.copy()
-
 fig, ax = plt.subplots(figsize=(8, 8))
-ax.imshow(preview)
+ax.imshow(image_rgb)
 for i, (x, y) in enumerate(pts_src):
     ax.scatter(x, y, c="red", s=50)
     ax.text(x + 10, y + 10, f"P{i + 1}", color="yellow", fontsize=12)
-ax.set_title("Selected quadrat corners")
-plt.show()
-
-plt.figure(figsize=(8, 8))
-plt.imshow(preview)
-for i, (x, y) in enumerate(pts_src):
-    plt.scatter(x, y, c="red", s=50)
-    plt.text(x + 10, y + 10, f"P{i + 1}", color="yellow", fontsize=12)
-plt.title("Selected quadrat corners")
-plt.axis("off")
+ax.set_title("Selected quadrat corners (fixed)")
+ax.axis("off")
 plt.show()
 ```
 
 # 3. 射影変換で正方形に補正する
 
-選択した 4 点をもとに、区画を真上から見た正方形画像へ変換します。
-
 ```{python}
 warped_bgr, transform_matrix = warp_quadrat(
-    image_bgr,
-    pts_src,
+    image_bgr=image_bgr,
+    pts_src=pts_src,
     width=WIDTH,
     height=HEIGHT,
 )
@@ -436,41 +242,16 @@ transform_matrix
 fig, ax = plt.subplots(figsize=(8, 8))
 ax.imshow(warped_rgb)
 ax.set_title("Warped image (top-down view)")
+ax.axis("off")
 plt.show()
 ```
 
-# 4. 緑領域を抽出する
-
-次に、補正後画像を HSV 色空間に変換し、緑領域を抽出します。
-
-元スクリプトと同様に、しきい値は対話的に調整します。
-`q` を押した時点の設定が採用されます。
+# 4. 緑領域を抽出する（固定 HSV）
 
 ```{python}
 hsv = cv2.cvtColor(warped_bgr, cv2.COLOR_BGR2HSV)
+mask_green = make_hsv_mask(hsv, GREEN_HSV)
 ```
-
-```{python}
-green_initial = {
-    "H min": 35,
-    "H max": 95,
-    "S min": 0,
-    "S max": 255,
-    "V min": 0,
-    "V max": 255,
-}
-
-green_params, mask_green = interactive_hsv_mask(
-    hsv_image=hsv,
-    original_bgr=warped_bgr,
-    window_name="Green Classifier",
-    initial_values=green_initial,
-)
-
-green_params
-```
-
-緑マスクを可視化して確認します。
 
 ```{python}
 green_overlay = warped_rgb.copy()
@@ -490,47 +271,15 @@ green_ratio = green_pixels / total_pixels
 print(f"green_ratio = {green_ratio:.4f} ({green_ratio * 100:.2f}%)")
 ```
 
-# 5. 緑以外からリターを抽出する
-
-元スクリプトでは、まず緑を除外し、その残りからリターを抽出しています。
+# 5. 緑以外からリターを抽出する（固定 HSV）
 
 ```{python}
 mask_not_green = cv2.bitwise_not(mask_green)
-```
-
-ここでも HSV の範囲を対話的に調整します。
-
-```{python}
-litter_initial = {
-    "H min": 0,
-    "H max": 179,
-    "S min": 0,
-    "S max": 255,
-    "V min": 0,
-    "V max": 150,
-}
-
-litter_params_raw, mask_litter_raw = interactive_hsv_mask(
-    hsv_image=hsv,
-    original_bgr=warped_bgr,
-    window_name="Litter candidate",
-    initial_values=litter_initial,
-)
-
+mask_litter_raw = make_hsv_mask(hsv, LITTER_HSV)
 mask_litter = cv2.bitwise_and(mask_litter_raw, mask_not_green)
-litter_params = litter_params_raw
-litter_params
 ```
 
 # 6. 地面を残差として定義する
-
-ここでは、
-
-- 緑領域: `mask_green`
-- リター領域: `mask_litter`
-- 地面: `緑でもリターでもない領域`
-
-として定義します。
 
 ```{python}
 mask_soil = cv2.bitwise_and(mask_not_green, cv2.bitwise_not(mask_litter))
@@ -548,14 +297,6 @@ print(f"sum          = {(green_ratio + litter_ratio + soil_ratio):.4f}")
 ```
 
 # 7. 最終分類画像を作る
-
-元スクリプトの配色を引き継ぎ、
-
-- 緑: `(180, 180, 0)`
-- リター: `(0, 170, 255)`
-- 地面: `(204, 102, 153)`
-
-で塗り分けます。
 
 ```{python}
 segmented_bgr = warped_bgr.copy()
@@ -587,19 +328,17 @@ summary_df
 
 # 9. CSV と画像を保存する
 
-最後に、割合・しきい値・画像を保存します。
-
 ```{python}
 csv_path, warped_path, segmented_path = save_results(
-    image_path=image_path,
+    image_path=IMAGE_PATH,
     output_dir=OUTPUT_DIR,
     warped=warped_bgr,
     segmented=segmented_bgr,
     green_ratio=green_ratio,
     litter_ratio=litter_ratio,
     soil_ratio=soil_ratio,
-    green_params=green_params,
-    litter_params=litter_params,
+    green_params=GREEN_HSV,
+    litter_params=LITTER_HSV,
 )
 
 print(csv_path)
@@ -611,30 +350,15 @@ print(segmented_path)
 
 ## この qmd 版で変えた点
 
-元のスクリプトでは 1 本の処理として連続実行していましたが、qmd 版では次のように整理しました。
+- ファイルダイアログを廃止し、`params.image_path` を使うようにした
+- 4点クリックを廃止し、`PTS_SRC_MANUAL` の固定座標を使うようにした
+- OpenCV スライダーを廃止し、`GREEN_HSV` と `LITTER_HSV` の固定値を使うようにした
+- 説明用ノートブックとして、同じ手順を毎回再現しやすくした
 
-- 手順ごとにセクションを分けた
-- 関数化して再利用しやすくした
-- 各段階で画像や表をその場で確認できるようにした
-- Quarto の `params` で画像パスや出力先を管理できるようにした
+## 運用メモ
 
-## さらに改善できる点
+必要に応じて、画像ごとに以下だけ更新すれば使い回せます。
 
-今後さらに使いやすくするなら、次のような拡張が考えられます。
-
-1. クリック座標を保存して再利用する
-2. HSV しきい値を YAML や CSV に保存する
-3. 複数画像を一括処理する
-4. GUI 操作なしで再現できる完全自動版を別に用意する
-
-## 再現性を上げる運用
-
-特に qmd と相性がよいのは、
-
-- 一度決めた 4 点座標を保存する
-- 一度決めた HSV 範囲を保存する
-- 2 回目以降はその値を読み込んで自動実行する
-
-という形です。
-
-これを行うと、**最初だけ対話的に調整し、その後は同条件で半自動処理する**流れにできます。
+1. `params.image_path`
+2. `PTS_SRC_MANUAL`
+3. `GREEN_HSV` / `LITTER_HSV`
